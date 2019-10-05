@@ -5,6 +5,12 @@
 # of this license document, but changing it is not allowed.
 #
 
+if(DEFINED PROJECT_OUT_SUPPORT)
+  return()
+else()
+  set(PROJECT_OUT_SUPPORT 1)
+endif()
+
 IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE Release)
 ENDIF(NOT CMAKE_BUILD_TYPE)
