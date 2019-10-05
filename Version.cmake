@@ -5,6 +5,11 @@
 # of this license document, but changing it is not allowed.
 #
 
+if(DEFINED PROJECT_VERSIONS_SUPPORT)
+  return()
+else()
+  set(PROJECT_VERSIONS_SUPPORT 1)
+endif()
 
 function(setVersion maj min rev)
 

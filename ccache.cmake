@@ -5,6 +5,12 @@
 # of this license document, but changing it is not allowed.
 #
 
+if(DEFINED CCACHE_SUPPORT)
+  return()
+else()
+  set(CCACHE_SUPPORT 1)
+endif()
+
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
     message("using ccache in ${CCACHE_PROGRAM}")
