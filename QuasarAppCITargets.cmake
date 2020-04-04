@@ -11,79 +11,100 @@ else()
   set(QUASARAPP_DEFAULT_TARGETS 1)
 endif()
 
-function(initQmake)
 
-    set(Q_MAKE ${Qt5_DIR}/bin/qmake)
+function(initTestsArg testExec arg)
+
+    set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec})
+    set(RUN_CMD BuildetTests/${testExec}.sh)
+
     if (WIN32)
-        set(Q_MAKE ${Qt5_DIR}/bin/qmake.exe)
+        set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec}.exe)
+        set(RUN_CMD BuildetTests/${testExec}.exe)
+
     endif (WIN32)
 
-endfunction()
-
-function(initTests testExec arg)
+    find_program(Q_MAKE_EXE qmake)
 
     ADD_CUSTOM_TARGET(
         deployTest
-        COMMAND ${testExec} ${arg}
-        COMMENT "=================== Deploy Test ==================="
+        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${PROJECT_SOURCE_DIR}/BuildetTests -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
+        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -targetDir BuildetTests -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
     )
-
-    initQmake()
 
     ADD_CUSTOM_TARGET(
         test
-        COMMAND cqtdeployer -bin ${testExec} -qmake ${Q_MAKE}
+        COMMAND ${RUN_CMD} ${arg}
         COMMENT "=================== Run Test ==================="
+        WORKING_DIRECTORY BuildetTests
         DEPENDS deployTest
     )
+
+    message("prepare tests for ${RUN_CMD} with arg : ${arg}")
 
 endfunction()
 
 function(initTests testExec)
 
+    set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec})
+    set(RUN_CMD ${PROJECT_SOURCE_DIR}/BuildetTests/${testExec}.sh)
+
+    if (WIN32)
+        set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec}.exe)
+        set(RUN_CMD ${PROJECT_SOURCE_DIR}/BuildetTests/${testExec}.exe)
+
+    endif (WIN32)
+
+    find_program(Q_MAKE_EXE qmake)
+
     ADD_CUSTOM_TARGET(
         deployTest
-        COMMAND ${testExec}
-        COMMENT "=================== Deploy Test ==================="
+        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${PROJECT_SOURCE_DIR}/BuildetTests -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
+        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -targetDir BuildetTests -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
     )
-
-    initQmake()
 
     ADD_CUSTOM_TARGET(
         test
-        COMMAND cqtdeployer -bin ${testExec} -qmake ${Q_MAKE}
+        COMMAND ${RUN_CMD}
         COMMENT "=================== Run Test ==================="
+        WORKING_DIRECTORY BuildetTests
         DEPENDS deployTest
     )
 
-endfunction()
-
-function(initTests )
-
-    ADD_CUSTOM_TARGET(
-        test
-        COMMENT "=================== Run Test ==================="
-    )
+    message("prepare tests for ${RUN_CMD}")
 
 endfunction()
 
 function(initDeploy targets)
 
-    if(DEFINED targets)
-        initQmake()
+    find_program(Q_MAKE_EXE qmake)
 
-        ADD_CUSTOM_TARGET(
-            deploy
-            COMMAND cqtdeployer -bin ${targets} -qmake ${Q_MAKE}
-            COMMENT "=================== Run deploy ==================="
-            DEPENDS deployTest
-        )
-    else(DEFINED testExec)
-        ADD_CUSTOM_TARGET(
-            deploy
-            COMMENT "=================== Run deploy ==================="
-        )
-    endif(DEFINED testExec)
+    ADD_CUSTOM_TARGET(
+        deploy
+        COMMAND cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${PROJECT_SOURCE_DIR}/Distro -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
+        COMMENT "Deploy: cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${PROJECT_SOURCE_DIR}/Distro -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
+    )
+
+endfunction()
+
+function(initDeployQML targets qml)
+
+    find_program(Q_MAKE_EXE qmake)
+
+    ADD_CUSTOM_TARGET(
+        deploy
+        COMMAND cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${PROJECT_SOURCE_DIR}/Distro -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5 -qmlDir ${qml}
+        COMMENT "Deploy: cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${PROJECT_SOURCE_DIR}/Distro -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5 -qmlDir ${qml}"
+    )
+
+endfunction()
+
+function(initTestsDefault)
+    message("init empty tests")
+
+    ADD_CUSTOM_TARGET(
+        test
+        COMMENT "=================== Run Test ==================="
+    )
 
 endfunction()
 
@@ -96,7 +117,7 @@ function(initRelease)
 
 endfunction()
 
-function(initDeploy)
+function(initDeployDefault)
 
     ADD_CUSTOM_TARGET(
         deploy
@@ -115,8 +136,8 @@ function(initRelease)
 endfunction()
 
 function(initAll)
-    initTests()
-    initDeploy()
+    initTestsDefault()
+    initDeployDefault()
     initRelease()
 
 endfunction()
