@@ -74,28 +74,100 @@ function(initTests testExec)
 
 endfunction()
 
-function(initDeploy targets)
+function(initDeploy targets targetDir)
 
     find_program(Q_MAKE_EXE qmake)
 
     ADD_CUSTOM_TARGET(
+        cqtdeployer
+        COMMAND cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
+        COMMENT "Deploy: cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
+    )
+
+    ADD_CUSTOM_TARGET(
         deploy
-        COMMAND cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${PROJECT_SOURCE_DIR}/Distro -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
-        COMMENT "Deploy: cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${PROJECT_SOURCE_DIR}/Distro -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
+        COMMENT "=================== Run deploy ==================="
+        DEPENDS cqtdeployer snapClear snapcraft snapcraftCopy
     )
 
 endfunction()
 
-function(initDeployQML targets qml)
+function(initDeployQML targets targetDir qml)
 
     find_program(Q_MAKE_EXE qmake)
 
     ADD_CUSTOM_TARGET(
-        deploy
-        COMMAND cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${PROJECT_SOURCE_DIR}/Distro -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5 -qmlDir ${qml}
-        COMMENT "Deploy: cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${PROJECT_SOURCE_DIR}/Distro -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5 -qmlDir ${qml}"
+        cqtdeployer
+        COMMAND cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5 -qmlDir ${qml}
+        COMMENT "Deploy: cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5 -qmlDir ${qml}"
     )
 
+    ADD_CUSTOM_TARGET(
+        deploy
+        COMMENT "=================== Run deploy ==================="
+        DEPENDS cqtdeployer snapClear snapcraft snapcraftCopy
+    )
+
+endfunction()
+
+function(initDeploySnap sourceDir)
+
+    ADD_CUSTOM_TARGET(
+        snapClear
+        COMMAND snapcraft clear
+        COMMENT "clear snap: snapcraft clear"
+    )
+
+    ADD_CUSTOM_TARGET(
+        snapcraft
+        COMMAND snapcraft
+        COMMENT "create snap: snapcraft"
+    )
+
+    ADD_CUSTOM_TARGET(
+        snapcraftCopy
+        COMMAND ${CMAKE_COMMAND} -E copy *.snap ${sourceDir}
+        COMMENT "copt snap: ${CMAKE_COMMAND} -E copy *.snap ${sourceDir}"
+    )
+
+endfunction()
+
+function(initDeployQIF sourceDir targetDir config)
+
+    find_program(BINARYCREATOR_EXE binarycreator)
+
+    set(OUT_EXE ${sourceDir}/${PROJECT_NAME}OfllineInstaller.run)
+    if (WIN32)
+        set(OUT_EXE ${sourceDir}/${PROJECT_NAME}OfllineInstaller.exe)
+    endif (WIN32)
+
+    ADD_CUSTOM_TARGET(
+        qifDeploy
+        COMMAND ${BINARYCREATOR_EXE} --offline-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}
+        COMMENT "deploy qif: ${BINARYCREATOR_EXE} --offline-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}"
+    )
+
+endfunction()
+
+function(initReleaseSnap)
+
+    ADD_CUSTOM_TARGET(
+        snapRelease
+        COMMAND snapcraft push
+        COMMENT "snapcraft release"
+    )
+
+endfunction()
+
+function(initReleaseQif sourceDir)
+
+    ADD_CUSTOM_TARGET(
+        qifRelease
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${sourceDir}
+        ${CMAKE_BINARY_DIR}/Repo
+        COMMENT "qifRelease release ${CMAKE_COMMAND} -E copy_directory ${sourceDir} ${CMAKE_BINARY_DIR}/Repo"
+       )
 endfunction()
 
 function(initTestsDefault)
@@ -104,15 +176,6 @@ function(initTestsDefault)
     ADD_CUSTOM_TARGET(
         test
         COMMENT "=================== Run Test ==================="
-    )
-
-endfunction()
-
-function(initRelease)
-
-    ADD_CUSTOM_TARGET(
-        release
-        COMMENT "=================== Run release ==================="
     )
 
 endfunction()
@@ -126,7 +189,7 @@ function(initDeployDefault)
 
 endfunction()
 
-function(initRelease)
+function(initReleaseDefault)
 
     ADD_CUSTOM_TARGET(
         release
@@ -138,7 +201,7 @@ endfunction()
 function(initAll)
     initTestsDefault()
     initDeployDefault()
-    initRelease()
+    initReleaseDefault()
 
 endfunction()
 
