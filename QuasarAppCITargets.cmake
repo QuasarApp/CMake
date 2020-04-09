@@ -53,9 +53,9 @@
 #
 # initReleaseSnap() // create subtargets for publish snap deployed snap package
 #
-# initReleaseQif(sourceDir) // create subtargets for publish the qif package on qif repository
-# -sourceDir - path to folder with qif template
-
+# initReleaseQif(sourceDir targetDir) // create subtargets for publish the qif package on qif repository
+# - sourceDir - path to folder with qif template
+# - targetDir - path to target derictory
 
 
 if(DEFINED QUASARAPP_DEFAULT_TARGETS)
@@ -223,16 +223,18 @@ function(initDeployAPK input aliase keystore keystorePass targetDir)
     find_program(A_DEPLOYER androiddeployqt)
 
     ADD_CUSTOM_TARGET(
-        deployAPK
+        createAPK
         COMMAND ${A_DEPLOYER} ${INPUT_ANDROID} ${OUTPUT_ANDROID} ${JDK} --gradle ${SIGN}
         COMMENT "Run deploy android apk : ${A_DEPLOYER} ${INPUT_ANDROID} ${OUTPUT_ANDROID} ${JDK} --gradle ${SIGN}"
     )
 
     ADD_CUSTOM_TARGET(
-        cpAPK
+        deployAPK
         COMMAND ${CMAKE_COMMAND} -E copy *.apk ${targetDir}
         COMMENT "copt apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/AndroidBuild/build/outputs/apk/
+        DEPENDS createAPK
+
     )
 
 
@@ -260,7 +262,21 @@ function(initReleaseSnap)
 
 endfunction()
 
-function(initReleaseQif sourceDir)
+function(initReleaseQif sourceDir targetDir)
+    find_program(BINARYCREATOR_EXE binarycreator)
+
+    set(OUT_EXE ${targetDir}/${PROJECT_NAME}OfllineInstaller.run)
+    if (WIN32)
+        set(OUT_EXE ${targetDir}/${PROJECT_NAME}OfllineInstaller.exe)
+    endif (WIN32)
+
+    ADD_CUSTOM_TARGET(
+        qifDeployOnline
+        COMMAND ${BINARYCREATOR_EXE} --online-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}
+        COMMENT "deploy qif online: ${BINARYCREATOR_EXE} --online-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}"
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+
+    )
 
     ADD_CUSTOM_TARGET(
         qifRelease
@@ -269,7 +285,7 @@ function(initReleaseQif sourceDir)
         ${CMAKE_BINARY_DIR}/Repo
         COMMENT "qifRelease release ${CMAKE_COMMAND} -E copy_directory ${sourceDir} ${CMAKE_BINARY_DIR}/Repo"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-
+        DEPENDS qifDeployOnline
        )
 endfunction()
 
