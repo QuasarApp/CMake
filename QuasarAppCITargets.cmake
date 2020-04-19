@@ -68,7 +68,8 @@ endif()
 function(initTestsArg testExec arg)
 
     if(TARGET test)
-        message(""the test target already created!")
+        message("the test target already created!")
+        return()
     endif(TARGET test)
 
     set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec})
@@ -103,7 +104,9 @@ endfunction()
 function(initTests testExec)
 
     if(TARGET test)
-        message(""the test target already created!")
+        message("the test target already created!")
+        return()
+
     endif(TARGET test)
 
     set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec})
@@ -138,8 +141,10 @@ endfunction()
 function(initDeploy targets targetDir)
 
     if(TARGET deploy)
-        message(""the deploy target already created!")
-    endif(TARGET test)
+        message("the deploy target already created!")
+        return()
+
+    endif(TARGET deploy)
 
     find_program(Q_MAKE_EXE qmake)
 
@@ -161,8 +166,10 @@ endfunction()
 function(initDeployQML targets targetDir qml)
 
     if(TARGET deploy)
-        message(""the deploy target already created!")
-    endif(TARGET test)
+        message("the deploy target already created!")
+        return()
+
+    endif(TARGET deploy)
 
     find_program(Q_MAKE_EXE qmake)
 
@@ -185,8 +192,10 @@ endfunction()
 function(initDeploySnap targetDir)
 
     if(TARGET snapcraft)
-        message(""the snapcraft target already created!")
-    endif(TARGET test)
+        message("the snapcraft target already created!")
+        return()
+
+    endif(TARGET snapcraft)
 
     ADD_CUSTOM_TARGET(
         snapClear
@@ -217,7 +226,9 @@ endfunction()
 function(initDeployQIF sourceDir targetDir config)
 
     if(TARGET qifDeploy)
-        message(""the qifDeploy target already created!")
+        message("the qifDeploy target already created!")
+        return()
+
     endif(TARGET qifDeploy)
 
     find_program(BINARYCREATOR_EXE binarycreator)
@@ -240,7 +251,9 @@ endfunction()
 function(initDeployAPK input aliase keystore keystorePass targetDir)
 
     if(TARGET deployAPK)
-        message(""the deployAPK target already created!")
+        message("the deployAPK target already created!")
+        return()
+
     endif(TARGET deployAPK)
 
     set(OUTPUT_ANDROID "--output ${PROJECT_SOURCE_DIR}/AndroidBuild")
@@ -271,7 +284,9 @@ endfunction()
 function(initRelease)
 
     if(TARGET release)
-        message(""the release target already created!")
+        message("the release target already created!")
+        return()
+
     endif(TARGET release)
 
     ADD_CUSTOM_TARGET(
@@ -285,7 +300,9 @@ endfunction()
 function(initReleaseSnap)
 
     if(TARGET snapRelease)
-        message(""the snapRelease target already created!")
+        message("the snapRelease target already created!")
+        return()
+
     endif(TARGET snapRelease)
 
     ADD_CUSTOM_TARGET(
@@ -300,7 +317,9 @@ endfunction()
 
 function(initReleaseQif sourceDir targetDir)
     if(TARGET qifRelease)
-        message(""the qifRelease target already created!")
+        message("the qifRelease target already created!")
+        return()
+
     endif(TARGET qifRelease)
 
     find_program(BINARYCREATOR_EXE binarycreator)
@@ -331,7 +350,9 @@ endfunction()
 
 function(initTestsDefault)
     if(TARGET test)
-        message(""the test target already created!")
+        message("the test target already created!")
+        return()
+
     endif(TARGET test)
 
     message("init empty tests")
@@ -345,7 +366,9 @@ endfunction()
 
 function(initDeployDefault)
     if(TARGET deploy)
-        message(""the deploy target already created!")
+        message("the deploy target already created!")
+        return()
+
     endif(TARGET deploy)
 
     ADD_CUSTOM_TARGET(
@@ -357,7 +380,9 @@ endfunction()
 
 function(initReleaseDefault)
     if(TARGET release)
-        message(""the release target already created!")
+        message("the release target already created!")
+        return()
+
     endif(TARGET release)
 
     ADD_CUSTOM_TARGET(
