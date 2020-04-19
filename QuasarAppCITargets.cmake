@@ -67,6 +67,10 @@ endif()
 
 function(initTestsArg testExec arg)
 
+    if(TARGET test)
+        message(""the test target already created!")
+    endif(TARGET test)
+
     set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec})
     set(RUN_CMD BuildetTests/${testExec}.sh)
 
@@ -97,6 +101,10 @@ function(initTestsArg testExec arg)
 endfunction()
 
 function(initTests testExec)
+
+    if(TARGET test)
+        message(""the test target already created!")
+    endif(TARGET test)
 
     set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec})
     set(RUN_CMD ${PROJECT_SOURCE_DIR}/BuildetTests/${testExec}.sh)
@@ -129,6 +137,10 @@ endfunction()
 
 function(initDeploy targets targetDir)
 
+    if(TARGET deploy)
+        message(""the deploy target already created!")
+    endif(TARGET test)
+
     find_program(Q_MAKE_EXE qmake)
 
     ADD_CUSTOM_TARGET(
@@ -147,6 +159,10 @@ function(initDeploy targets targetDir)
 endfunction()
 
 function(initDeployQML targets targetDir qml)
+
+    if(TARGET deploy)
+        message(""the deploy target already created!")
+    endif(TARGET test)
 
     find_program(Q_MAKE_EXE qmake)
 
@@ -167,6 +183,10 @@ function(initDeployQML targets targetDir qml)
 endfunction()
 
 function(initDeploySnap targetDir)
+
+    if(TARGET snapcraft)
+        message(""the snapcraft target already created!")
+    endif(TARGET test)
 
     ADD_CUSTOM_TARGET(
         snapClear
@@ -196,6 +216,10 @@ endfunction()
 
 function(initDeployQIF sourceDir targetDir config)
 
+    if(TARGET qifDeploy)
+        message(""the qifDeploy target already created!")
+    endif(TARGET qifDeploy)
+
     find_program(BINARYCREATOR_EXE binarycreator)
 
     set(OUT_EXE ${targetDir}/${PROJECT_NAME}OfllineInstaller.run)
@@ -214,6 +238,10 @@ function(initDeployQIF sourceDir targetDir config)
 endfunction()
 
 function(initDeployAPK input aliase keystore keystorePass targetDir)
+
+    if(TARGET deployAPK)
+        message(""the deployAPK target already created!")
+    endif(TARGET deployAPK)
 
     set(OUTPUT_ANDROID "--output ${PROJECT_SOURCE_DIR}/AndroidBuild")
     set(INPUT_ANDROID "--input ${input}")
@@ -242,6 +270,10 @@ endfunction()
 
 function(initRelease)
 
+    if(TARGET release)
+        message(""the release target already created!")
+    endif(TARGET release)
+
     ADD_CUSTOM_TARGET(
         release
         COMMENT "=================== Relese project ==================="
@@ -251,6 +283,10 @@ function(initRelease)
 endfunction()
 
 function(initReleaseSnap)
+
+    if(TARGET snapRelease)
+        message(""the snapRelease target already created!")
+    endif(TARGET snapRelease)
 
     ADD_CUSTOM_TARGET(
         snapRelease
@@ -263,6 +299,10 @@ function(initReleaseSnap)
 endfunction()
 
 function(initReleaseQif sourceDir targetDir)
+    if(TARGET qifRelease)
+        message(""the qifRelease target already created!")
+    endif(TARGET qifRelease)
+
     find_program(BINARYCREATOR_EXE binarycreator)
 
     set(OUT_EXE ${targetDir}/${PROJECT_NAME}OfllineInstaller.run)
@@ -290,6 +330,10 @@ function(initReleaseQif sourceDir targetDir)
 endfunction()
 
 function(initTestsDefault)
+    if(TARGET test)
+        message(""the test target already created!")
+    endif(TARGET test)
+
     message("init empty tests")
 
     ADD_CUSTOM_TARGET(
@@ -300,6 +344,9 @@ function(initTestsDefault)
 endfunction()
 
 function(initDeployDefault)
+    if(TARGET deploy)
+        message(""the deploy target already created!")
+    endif(TARGET deploy)
 
     ADD_CUSTOM_TARGET(
         deploy
@@ -309,6 +356,9 @@ function(initDeployDefault)
 endfunction()
 
 function(initReleaseDefault)
+    if(TARGET release)
+        message(""the release target already created!")
+    endif(TARGET release)
 
     ADD_CUSTOM_TARGET(
         release
