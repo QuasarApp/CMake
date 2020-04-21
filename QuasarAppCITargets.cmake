@@ -45,6 +45,8 @@
 # - keystorePass - pass of keystore file
 # - targetDir - target dir for output apk file
 #
+# initDeployAPKDefault // add empty target for deploy apk file
+#
 # initDeployDefault() // create a enpty step for deployment
 #
 #
@@ -64,6 +66,19 @@ else()
   set(QUASARAPP_DEFAULT_TARGETS 1)
 endif()
 
+function(emptyTarget targetName)
+
+    if(TARGET ${targetName})
+        message("the ${targetName} target already created!")
+        return()
+
+    endif(TARGET ${targetName})
+
+    ADD_CUSTOM_TARGET(
+        ${targetName}
+    )
+
+endfunction()
 
 function(initTestsArg testExec arg)
 
@@ -82,6 +97,13 @@ function(initTestsArg testExec arg)
     endif (WIN32)
 
     find_program(Q_MAKE_EXE qmake)
+
+    find_program(CQT_EXE cqtdeployer)
+
+    IF(NOT EXISTS ${CQT_EXE})
+        message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
+        return()
+    endif(NOT EXISTS ${CQT_EXE})
 
     ADD_CUSTOM_TARGET(
         deployTest
@@ -120,6 +142,13 @@ function(initTests testExec)
 
     find_program(Q_MAKE_EXE qmake)
 
+    find_program(CQT_EXE cqtdeployer)
+
+    IF(NOT EXISTS ${CQT_EXE})
+        message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
+        return()
+    endif(NOT EXISTS ${CQT_EXE})
+
     ADD_CUSTOM_TARGET(
         deployTest
         COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${PROJECT_SOURCE_DIR}/BuildetTests -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
@@ -148,6 +177,14 @@ function(initDeploy targets targetDir)
 
     find_program(Q_MAKE_EXE qmake)
 
+    find_program(CQT_EXE cqtdeployer)
+
+    IF(NOT EXISTS ${CQT_EXE})
+        message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
+        emptyTarget(cqtdeployer)
+        return()
+    endif(NOT EXISTS ${CQT_EXE})
+
     ADD_CUSTOM_TARGET(
         cqtdeployer
         COMMAND cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
@@ -158,7 +195,9 @@ function(initDeploy targets targetDir)
     ADD_CUSTOM_TARGET(
         deploy
         COMMENT "=================== Run deploy ==================="
-        DEPENDS cqtdeployer snapClear snapcraft snapcraftCopy deployAPK
+        DEPENDS cqtdeployer qifDeploy snap deployAPK
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+
     )
 
 endfunction()
@@ -172,6 +211,13 @@ function(initDeployQML targets targetDir qml)
     endif(TARGET deploy)
 
     find_program(Q_MAKE_EXE qmake)
+    find_program(CQT_EXE cqtdeployer)
+
+    IF(NOT EXISTS ${CQT_EXE})
+        message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
+        emptyTarget(cqtdeployer)
+        return()
+    endif(NOT EXISTS ${CQT_EXE})
 
     ADD_CUSTOM_TARGET(
         cqtdeployer
@@ -183,8 +229,9 @@ function(initDeployQML targets targetDir qml)
     ADD_CUSTOM_TARGET(
         deploy
         COMMENT "=================== Run deploy ==================="
-        DEPENDS cqtdeployer snapClear snapcraft snapcraftCopy deployAPK
+        DEPENDS cqtdeployer qifDeploy snap deployAPK
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+
     )
 
 endfunction()
@@ -196,6 +243,14 @@ function(initDeploySnap targetDir)
         return()
 
     endif(TARGET snapcraft)
+
+    find_program(SNAPCRAFT_EXE "snapcraft")
+
+    if(NOT EXISTS ${SNAPCRAFT_EXE})
+        message("please install the snapcraft befor deploy this project! Use: sudo snap install snapcraft --classic")
+        emptyTarget(snap)
+        return()
+    endif(NOT EXISTS ${SNAPCRAFT_EXE})
 
     ADD_CUSTOM_TARGET(
         snapClear
@@ -221,6 +276,13 @@ function(initDeploySnap targetDir)
 
     )
 
+    ADD_CUSTOM_TARGET(
+        snap
+        COMMENT "deploy snap"
+        DEPENDS snapClear snapcraft snapcraftCopy
+
+    )
+
 endfunction()
 
 function(initDeployQIF sourceDir targetDir config)
@@ -232,6 +294,12 @@ function(initDeployQIF sourceDir targetDir config)
     endif(TARGET qifDeploy)
 
     find_program(BINARYCREATOR_EXE binarycreator)
+
+    IF(NOT EXISTS ${BINARYCREATOR_EXE})
+        message("the Binarycreator not exits please install or adde path to QtInstaller Framework to PATH and run cmake again!")
+        emptyTarget(qifDeploy)
+        return()
+    endif(NOT EXISTS ${BINARYCREATOR_EXE})
 
     set(OUT_EXE ${targetDir}/${PROJECT_NAME}OfllineInstaller.run)
     if (WIN32)
@@ -255,6 +323,13 @@ function(initDeployAPK input aliase keystore keystorePass targetDir)
         return()
 
     endif(TARGET deployAPK)
+
+    IF(NOT DEFINED $ENV{ANDROID_HOME})
+        message("the ANDROID_HOME is not defined. define ANDROID_HOME variable and run cmake again!")
+        emptyTarget(deployAPK)
+        return()
+    endif(NOT DEFINED $ENV{ANDROID_HOME})
+
 
     set(OUTPUT_ANDROID "--output ${PROJECT_SOURCE_DIR}/AndroidBuild")
     set(INPUT_ANDROID "--input ${input}")
