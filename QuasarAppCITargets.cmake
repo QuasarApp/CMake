@@ -10,52 +10,60 @@
 #
 #
 # ***Testing***
-# initTestsArg( testExec arg ) // init "test" target for test utiliry of your application
+# addTestsArg( name testExec arg ) // name target for test utiliry of your application
+# - name - prefix for taget (any word)
 # - testExec - name of tests utility (without extensions)
 # - arg - arguments fot testExec
 #
-# initTests // init "test" target for test utiliry of your application (without arguments)
+# addTests (name testExec )// name target for test utiliry of your application (without arguments)
+# - name - prefix for taget (any word)
 # - testExec - name of tests utility (without extensions)
 #
-# initTestsDefault - init empty target tests
+# initTests - init main test target for tessting all added tests, this method need to call after all invoced addTests methods.
 #
 #
 # *** Deployment ***
-# initDeploy(targets targetDir) // init deploy target for deployed your application via cqtdeployer tool
+# addDeploy(name targets targetDir) // add deploy target for deployed your application via cqtdeployer tool
+# - name - this is prefix of added subtarget (any word)
 # - targets - this is list of cqtdeployer targets see cqtdeployer help https://github.com/QuasarApp/CQtDeployer/wiki/Options (-bin)
 # - targetDir - this is target directory see option targetDir of cqtdeployer help https://github.com/QuasarApp/CQtDeployer/wiki/Options (-targetDir)
 #
-# initDeployQML(targets targetDir qml) // some as initDeploy but with qml location option
-# - targets - this is list of cqtdeployer targets see cqtdeployer help https://github.com/QuasarApp/CQtDeployer/wiki/Options (-bin)
-# - targetDir - this is target directory see option targetDir of cqtdeployer help https://github.com/QuasarApp/CQtDeployer/wiki/Options (-targetDir)
-# - qml - this is qml location dir see help of qmlDir option of cqtdeployer help https://github.com/QuasarApp/CQtDeployer/wiki/Options (-qmlDir)
+# addDeployFromFile(name) // some as initDeploy but use CQtDeployer.json for configuration.
+# - name - this is prefix of added subtarget (any word)
 #
-# initDeploySnap(targetDir) // add to deploy step substeps for create a snap package
+# addDeployFromCustomFile(name file) // some as initDeploy but use custo path for deployment file for configuration.
+# - name - this is prefix of added subtarget (any word)
+# - file - this is path to config file of cqtdeployer
+#
+# addDeploySnap(name targetDir) // add to deploy step substeps for create a snap package
+# - name - this is prefix of added subtarget (any word)
 # - targetDir - distanation direcroty for snap files
 #
-# initDeployQIF(sourceDir targetDir config) // add to deploy step substeps for create Qt Install FrameWork Installer
+# addDeployQIF(name sourceDir targetDir config) // add to deploy step substeps for create Qt Install FrameWork Installer
+# - name - this is prefix of added subtarget (any word)
 # - location for created installer
 # - sourceDir - path to folder with qif template
 # - config - path to config file of qif template
 #
-# initDeployAPK(input aliase keystore keystorePass targetDir) // add subtargets of deploy setep for create signed android apk file
+# addDeployAPK(name input aliase keystore keystorePass targetDir) // add subtargets of deploy setep for create signed android apk file
+# - name - this is prefix of added subtarget (any word)
 # - input - path to input android json file : *-deployment-settings.json
 # - aliase - aliase for key store
 # - keystore - path of key store
 # - keystorePass - pass of keystore file
 # - targetDir - target dir for output apk file
 #
-# initDeployAPKDefault // add empty target for deploy apk file
-#
-# initDeployDefault() // create a enpty step for deployment
+# initDeploy() // create a main deploy target fpr all addDeploy subtargets. this method need to call fater invoced of all addDeploy methods
 #
 #
 # *** Release ***
-# initRelease() // create the general release target
+# initRelease() // create the general release target for all subtargets addRelease. This method need to call after invoce all addRelease methods.
 #
-# initReleaseSnap() // create subtargets for publish snap deployed snap package
+# initReleaseSnap(name) // create subtargets for publish snap deployed snap package
+# - name - this is prefix of added subtarget (any word)
 #
-# initReleaseQif(sourceDir targetDir) // create subtargets for publish the qif package on qif repository
+# initReleaseQif(name sourceDir targetDir) // create subtargets for publish the qif package on qif repository
+# - name - this is prefix of added subtarget (any word)
 # - sourceDir - path to folder with qif template
 # - targetDir - path to target derictory
 
@@ -65,6 +73,11 @@ if(DEFINED QUASARAPP_DEFAULT_TARGETS)
 else()
   set(QUASARAPP_DEFAULT_TARGETS 1)
 endif()
+
+set(TEST_TARGETS_LIST "")
+set(DEPLOY_TARGETS_LIST "")
+set(RELEASE_TARGETS_LIST "")
+set(DIR_FOR_TESTING ${PROJECT_SOURCE_DIR}/BuildetTests)
 
 function(emptyTarget targetName)
 
@@ -80,12 +93,32 @@ function(emptyTarget targetName)
 
 endfunction()
 
-function(initTestsArg testExec arg)
+function(initTests)
 
     if(TARGET test)
         message("the test target already created!")
         return()
+
     endif(TARGET test)
+
+    message("test sub targets: ${TEST_TARGETS_LIST}")
+
+    ADD_CUSTOM_TARGET(
+        test
+        COMMENT "=================== Run Test ==================="
+        DEPENDS ${TEST_TARGETS_LIST}
+    )
+
+    message("prepare tests for ${TEST_TARGETS_LIST}")
+
+endfunction()
+
+function(addTestsArg name testExec arg)
+
+    if(TARGET test${name})
+        message("the test${name} target already created!")
+        return()
+    endif(TARGET test${name})
 
     set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec})
     set(RUN_CMD BuildetTests/${testExec}.sh)
@@ -106,30 +139,33 @@ function(initTestsArg testExec arg)
     endif(NOT EXISTS ${CQT_EXE})
 
     ADD_CUSTOM_TARGET(
-        deployTest
-        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${PROJECT_SOURCE_DIR}/BuildetTests -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
+        deployTest${name}
+        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
         COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -targetDir BuildetTests -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
-    )
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        )
 
     ADD_CUSTOM_TARGET(
-        test
+        test${name}
         COMMAND ${RUN_CMD} ${arg}
         COMMENT "=================== Run Test ==================="
-        WORKING_DIRECTORY BuildetTests
-        DEPENDS deployTest
+        WORKING_DIRECTORY ${DIR_FOR_TESTING}/${name}
+        DEPENDS deployTest${name}
     )
+
+    set(TEST_TARGETS_LIST ${TEST_TARGETS_LIST} test${name} PARENT_SCOPE)
 
     message("prepare tests for ${RUN_CMD} with arg : ${arg}")
 
 endfunction()
 
-function(initTests testExec)
+function(addTests name testExec)
 
-    if(TARGET test)
-        message("the test target already created!")
+    if(TARGET test${name})
+        message("the test${name} target already created!")
         return()
 
-    endif(TARGET test)
+    endif(TARGET test${name})
 
     set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec})
     set(RUN_CMD ${PROJECT_SOURCE_DIR}/BuildetTests/${testExec}.sh)
@@ -150,24 +186,25 @@ function(initTests testExec)
     endif(NOT EXISTS ${CQT_EXE})
 
     ADD_CUSTOM_TARGET(
-        deployTest
-        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${PROJECT_SOURCE_DIR}/BuildetTests -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
+        deployTest${name}
+        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
         COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -targetDir BuildetTests -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
     )
 
     ADD_CUSTOM_TARGET(
-        test
+        test${name}
         COMMAND ${RUN_CMD}
         COMMENT "=================== Run Test ==================="
         WORKING_DIRECTORY BuildetTests
-        DEPENDS deployTest
+        DEPENDS deployTest${name}
     )
+    set(TEST_TARGETS_LIST ${TEST_TARGETS_LIST} test${name} PARENT_SCOPE)
 
     message("prepare tests for ${RUN_CMD}")
 
 endfunction()
 
-function(initDeploy targets targetDir)
+function(initDeploy)
 
     if(TARGET deploy)
         message("the deploy target already created!")
@@ -175,85 +212,118 @@ function(initDeploy targets targetDir)
 
     endif(TARGET deploy)
 
+    message("deploy subtargets: ${DEPLOY_TARGETS_LIST}")
+
+
+    ADD_CUSTOM_TARGET(
+        deploy
+        COMMENT "=================== Run deploy ==================="
+        DEPENDS ${DEPLOY_TARGETS_LIST}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+
+    )
+
+endfunction()
+
+function(addDeploy name targets targetDir)
+
+    if(TARGET deploy${name})
+        message("the deploy${name} target already created!")
+        return()
+
+    endif(TARGET deploy${name})
+
     find_program(Q_MAKE_EXE qmake)
 
     find_program(CQT_EXE cqtdeployer)
 
     IF(NOT EXISTS ${CQT_EXE})
         message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
-        emptyTarget(cqtdeployer)
         return()
     endif(NOT EXISTS ${CQT_EXE})
 
     ADD_CUSTOM_TARGET(
-        cqtdeployer
+        deploy${name}
         COMMAND cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
         COMMENT "Deploy: cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
 
-    ADD_CUSTOM_TARGET(
-        deploy
-        COMMENT "=================== Run deploy ==================="
-        DEPENDS cqtdeployer qifDeploy snap deployAPK
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-
-    )
+    set(DEPLOY_TARGETS_LIST ${DEPLOY_TARGETS_LIST} deploy${name} PARENT_SCOPE)
 
 endfunction()
 
-function(initDeployQML targets targetDir qml)
+function(addDeployFromFile name)
 
-    if(TARGET deploy)
-        message("the deploy target already created!")
+    if(TARGET deploy${name})
+        message("the deploy${name} target already created!")
         return()
 
-    endif(TARGET deploy)
+    endif(TARGET deploy${name})
 
     find_program(Q_MAKE_EXE qmake)
     find_program(CQT_EXE cqtdeployer)
 
     IF(NOT EXISTS ${CQT_EXE})
         message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
-        emptyTarget(cqtdeployer)
         return()
     endif(NOT EXISTS ${CQT_EXE})
 
     ADD_CUSTOM_TARGET(
-        cqtdeployer
-        COMMAND cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5 -qmlDir ${qml}
-        COMMENT "Deploy: cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5 -qmlDir ${qml}"
+        deploy${name}
+        COMMAND cqtdeployer -qmake ${Q_MAKE_EXE}
+        COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE}"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
+    set(DEPLOY_TARGETS_LIST ${DEPLOY_TARGETS_LIST} deploy${name} PARENT_SCOPE)
 
-    ADD_CUSTOM_TARGET(
-        deploy
-        COMMENT "=================== Run deploy ==================="
-        DEPENDS cqtdeployer qifDeploy snap deployAPK
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-
-    )
 
 endfunction()
 
-function(initDeploySnap targetDir)
+function(addDeployFromCustomFile name file)
 
-    if(TARGET snapcraft)
-        message("the snapcraft target already created!")
+    if(TARGET deploy${name})
+        message("the deploy${name} target already created!")
         return()
 
-    endif(TARGET snapcraft)
+    endif(TARGET deploy${name})
+
+    find_program(Q_MAKE_EXE qmake)
+    find_program(CQT_EXE cqtdeployer)
+
+    IF(NOT EXISTS ${CQT_EXE})
+        message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
+        return()
+    endif(NOT EXISTS ${CQT_EXE})
+
+    ADD_CUSTOM_TARGET(
+        deploy${name}
+        COMMAND cqtdeployer -qmake ${Q_MAKE_EXE} -confFile ${file}
+        COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE} -confFile ${file}"
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    )
+
+    set(DEPLOY_TARGETS_LIST ${DEPLOY_TARGETS_LIST} deploy${name} PARENT_SCOPE)
+
+endfunction()
+
+function(addDeploySnap name targetDir)
+
+    if(TARGET snap${name})
+        message("the snap${name} target already created!")
+        return()
+
+    endif(TARGET snap${name})
 
     find_program(SNAPCRAFT_EXE "snapcraft")
 
     if(NOT EXISTS ${SNAPCRAFT_EXE})
         message("please install the snapcraft befor deploy this project! Use: sudo snap install snapcraft --classic")
-        emptyTarget(snap)
         return()
     endif(NOT EXISTS ${SNAPCRAFT_EXE})
 
     ADD_CUSTOM_TARGET(
-        snapClear
+        snapClear${name}
         COMMAND snapcraft clean
         COMMENT "clear snap: snapcraft clear"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -261,7 +331,7 @@ function(initDeploySnap targetDir)
     )
 
     ADD_CUSTOM_TARGET(
-        snapcraft
+        snapcraft${name}
         COMMAND snapcraft
         COMMENT "create snap: snapcraft"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -269,7 +339,7 @@ function(initDeploySnap targetDir)
     )
 
     ADD_CUSTOM_TARGET(
-        snapcraftCopy
+        snapcraftCopy${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.snap ${targetDir}
         COMMENT "copt snap: ${CMAKE_COMMAND} -E copy *.snap ${targetDir}"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -277,27 +347,29 @@ function(initDeploySnap targetDir)
     )
 
     ADD_CUSTOM_TARGET(
-        snap
-        COMMENT "deploy snap"
-        DEPENDS snapClear snapcraft snapcraftCopy
+        snap${name}
+        COMMENT "deploy snap${name}"
+        DEPENDS snapClear${name} snapcraft${name} snapcraftCopy${name}
 
     )
 
+    set(DEPLOY_TARGETS_LIST ${DEPLOY_TARGETS_LIST} snap${name} PARENT_SCOPE)
+
+
 endfunction()
 
-function(initDeployQIF sourceDir targetDir config)
+function(addDeployQIF name sourceDir targetDir config)
 
-    if(TARGET qifDeploy)
-        message("the qifDeploy target already created!")
+    if(TARGET qifDeploy${name})
+        message("the qifDeploy${name} target already created!")
         return()
 
-    endif(TARGET qifDeploy)
+    endif(TARGET qifDeploy${name})
 
     find_program(BINARYCREATOR_EXE binarycreator)
 
     IF(NOT EXISTS ${BINARYCREATOR_EXE})
         message("the Binarycreator not exits please install or adde path to QtInstaller Framework to PATH and run cmake again!")
-        emptyTarget(qifDeploy)
         return()
     endif(NOT EXISTS ${BINARYCREATOR_EXE})
 
@@ -307,26 +379,27 @@ function(initDeployQIF sourceDir targetDir config)
     endif (WIN32)
 
     ADD_CUSTOM_TARGET(
-        qifDeploy
+        qifDeploy${name}
         COMMAND ${BINARYCREATOR_EXE} --offline-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}
         COMMENT "deploy qif: ${BINARYCREATOR_EXE} --offline-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 
     )
 
+    set(DEPLOY_TARGETS_LIST ${DEPLOY_TARGETS_LIST} qifDeploy${name} PARENT_SCOPE)
+
 endfunction()
 
-function(initDeployAPK input aliase keystore keystorePass targetDir)
+function(addDeployAPK name input aliase keystore keystorePass targetDir)
 
-    if(TARGET deployAPK)
-        message("the deployAPK target already created!")
+    if(TARGET deployAPK${name})
+        message("the deployAPK${name} target already created!")
         return()
 
-    endif(TARGET deployAPK)
+    endif(TARGET deployAPK${name})
 
     IF(NOT DEFINED $ENV{ANDROID_HOME})
         message("the ANDROID_HOME is not defined. define ANDROID_HOME variable and run cmake again!")
-        emptyTarget(deployAPK)
         return()
     endif(NOT DEFINED $ENV{ANDROID_HOME})
 
@@ -339,21 +412,21 @@ function(initDeployAPK input aliase keystore keystorePass targetDir)
     find_program(A_DEPLOYER androiddeployqt)
 
     ADD_CUSTOM_TARGET(
-        createAPK
+        createAPK${name}
         COMMAND ${A_DEPLOYER} ${INPUT_ANDROID} ${OUTPUT_ANDROID} ${JDK} --gradle ${SIGN}
         COMMENT "Run deploy android apk : ${A_DEPLOYER} ${INPUT_ANDROID} ${OUTPUT_ANDROID} ${JDK} --gradle ${SIGN}"
     )
 
     ADD_CUSTOM_TARGET(
-        deployAPK
+        deployAPK${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.apk ${targetDir}
         COMMENT "copt apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/AndroidBuild/build/outputs/apk/
-        DEPENDS createAPK
+        DEPENDS createAPK${name}
 
     )
 
-
+    set(DEPLOY_TARGETS_LIST ${DEPLOY_TARGETS_LIST} deployAPK${name} PARENT_SCOPE)
 endfunction()
 
 function(initRelease)
@@ -363,41 +436,48 @@ function(initRelease)
         return()
 
     endif(TARGET release)
+    message("release subtargets: ${RELEASE_TARGETS_LIST}")
 
     ADD_CUSTOM_TARGET(
         release
         COMMENT "=================== Relese project ==================="
-        DEPENDS snapRelease qifRelease
+        DEPENDS ${RELEASE_TARGETS_LIST}
     )
 
 endfunction()
 
-function(initReleaseSnap)
+function(addReleaseSnap name)
 
-    if(TARGET snapRelease)
-        message("the snapRelease target already created!")
+    if(TARGET snapRelease${name})
+        message("the snapRelease${name} target already created!")
         return()
 
-    endif(TARGET snapRelease)
+    endif(TARGET snapRelease${name})
 
     ADD_CUSTOM_TARGET(
-        snapRelease
+        snapRelease${name}
         COMMAND snapcraft push
-        COMMENT "snapcraft release"
+        COMMENT "snapRelease${name} release"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 
     )
 
+    set(RELEASE_TARGETS_LIST ${RELEASE_TARGETS_LIST} snapRelease${name} PARENT_SCOPE)
 endfunction()
 
-function(initReleaseQif sourceDir targetDir)
-    if(TARGET qifRelease)
-        message("the qifRelease target already created!")
+function(addReleaseQif name sourceDir targetDir)
+    if(TARGET qifRelease${name})
+        message("the qifRelease${name} target already created!")
         return()
 
-    endif(TARGET qifRelease)
+    endif(TARGET qifRelease${name})
 
     find_program(BINARYCREATOR_EXE binarycreator)
+
+    IF(NOT EXISTS ${BINARYCREATOR_EXE})
+        message("the Binarycreator not exits please install or adde path to QtInstaller Framework to PATH and run cmake again!")
+        return()
+    endif(NOT EXISTS ${BINARYCREATOR_EXE})
 
     set(OUT_EXE ${targetDir}/${PROJECT_NAME}OfllineInstaller.run)
     if (WIN32)
@@ -405,7 +485,7 @@ function(initReleaseQif sourceDir targetDir)
     endif (WIN32)
 
     ADD_CUSTOM_TARGET(
-        qifDeployOnline
+        qifDeployOnline${name}
         COMMAND ${BINARYCREATOR_EXE} --online-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}
         COMMENT "deploy qif online: ${BINARYCREATOR_EXE} --online-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -413,64 +493,23 @@ function(initReleaseQif sourceDir targetDir)
     )
 
     ADD_CUSTOM_TARGET(
-        qifRelease
+        qifRelease${name}
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${sourceDir}
         ${CMAKE_BINARY_DIR}/Repo
-        COMMENT "qifRelease release ${CMAKE_COMMAND} -E copy_directory ${sourceDir} ${CMAKE_BINARY_DIR}/Repo"
+        COMMENT "qifRelease${name} release ${CMAKE_COMMAND} -E copy_directory ${sourceDir} ${CMAKE_BINARY_DIR}/Repo"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        DEPENDS qifDeployOnline
+        DEPENDS qifDeployOnline${name}
        )
-endfunction()
 
-function(initTestsDefault)
-    if(TARGET test)
-        message("the test target already created!")
-        return()
-
-    endif(TARGET test)
-
-    message("init empty tests")
-
-    ADD_CUSTOM_TARGET(
-        test
-        COMMENT "=================== Run Test ==================="
-    )
-
-endfunction()
-
-function(initDeployDefault)
-    if(TARGET deploy)
-        message("the deploy target already created!")
-        return()
-
-    endif(TARGET deploy)
-
-    ADD_CUSTOM_TARGET(
-        deploy
-        COMMENT "=================== Run deploy ==================="
-    )
-
-endfunction()
-
-function(initReleaseDefault)
-    if(TARGET release)
-        message("the release target already created!")
-        return()
-
-    endif(TARGET release)
-
-    ADD_CUSTOM_TARGET(
-        release
-        COMMENT "=================== Run release ==================="
-    )
+   set(RELEASE_TARGETS_LIST ${RELEASE_TARGETS_LIST} qifRelease${name} PARENT_SCOPE)
 
 endfunction()
 
 function(initAll)
-    initTestsDefault()
-    initDeployDefault()
-    initReleaseDefault()
+    initTests()
+    initDeploy()
+    initRelease()
 
 endfunction()
 
