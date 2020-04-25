@@ -335,7 +335,7 @@ function(addDeploySnap name targetDir)
         COMMAND snapcraft
         COMMENT "create snap: snapcraft"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-
+        DEPENDS deploy${name}
     )
 
     ADD_CUSTOM_TARGET(
@@ -383,6 +383,7 @@ function(addDeployQIF name sourceDir targetDir config)
         COMMAND ${BINARYCREATOR_EXE} --offline-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}
         COMMENT "deploy qif: ${BINARYCREATOR_EXE} --offline-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        DEPENDS deploy${name}
 
     )
 
