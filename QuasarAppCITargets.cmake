@@ -9,19 +9,6 @@
 # This module implementation next cmake cunctions :
 #
 #
-# ***Testing***
-# addTestsArg( name testExec arg ) // name target for test utiliry of your application
-# - name - prefix for taget (any word)
-# - testExec - name of tests utility (without extensions)
-# - arg - arguments fot testExec
-#
-# addTests (name testExec )// name target for test utiliry of your application (without arguments)
-# - name - prefix for taget (any word)
-# - testExec - name of tests utility (without extensions)
-#
-# initTests - init main test target for tessting all added tests, this method need to call after all invoced addTests methods.
-#
-#
 # *** Deployment ***
 # addDeploy(name targets targetDir) // add deploy target for deployed your application via cqtdeployer tool
 # - name - this is prefix of added subtarget (any word)
@@ -59,13 +46,22 @@
 # *** Release ***
 # initRelease() // create the general release target for all subtargets addRelease. This method need to call after invoce all addRelease methods.
 #
-# initReleaseSnap(name) // create subtargets for publish snap deployed snap package
+# addReleaseSnap(name) // create subtargets for publish snap deployed snap package
 # - name - this is prefix of added subtarget (any word)
 #
-# initReleaseQif(name sourceDir targetDir) // create subtargets for publish the qif package on qif repository
+# addReleaseQif(name sourceDir targetDir) // create subtargets for publish the qif package on qif repository
 # - name - this is prefix of added subtarget (any word)
 # - sourceDir - path to folder with qif template
 # - targetDir - path to target derictory
+#
+#
+# *** Dcumentation ***
+# initDoc() // create the general doc target for all subtargets addDoc. This method need to call after invoce all addDoc methods.
+#
+# addDoc(name doxygenFile) // create subtargets for generate documentation of cpp code
+# - name - this is prefix of added subtarget (any word)
+# - doxygenFile - this is path to doxygen configuration file
+#
 
 
 if(DEFINED QUASARAPP_DEFAULT_TARGETS)
@@ -74,7 +70,7 @@ else()
   set(QUASARAPP_DEFAULT_TARGETS 1)
 endif()
 
-set(TEST_TARGETS_LIST "")
+set(DOC_TARGETS_LIST "")
 set(DEPLOY_TARGETS_LIST "")
 set(RELEASE_TARGETS_LIST "")
 set(DIR_FOR_TESTING ${PROJECT_SOURCE_DIR}/BuildetTests)
@@ -92,117 +88,6 @@ function(emptyTarget targetName)
     )
 
 endfunction()
-
-#function(initTests)
-
-#    if(TARGET test)
-#        message("the test target already created!")
-#        return()
-
-#    endif(TARGET test)
-
-#    message("test sub targets: ${TEST_TARGETS_LIST}")
-
-#    ADD_CUSTOM_TARGET(
-#        test
-#        COMMENT "=================== Run Test ==================="
-#        DEPENDS ${TEST_TARGETS_LIST}
-#    )
-
-#    message("prepare tests for ${TEST_TARGETS_LIST}")
-
-#endfunction()
-
-#function(addTestsArg name testExec arg)
-
-#    if(TARGET test${name})
-#        message("the test${name} target already created!")
-#        return()
-#    endif(TARGET test${name})
-
-#    set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec})
-#    set(RUN_CMD BuildetTests/${testExec}.sh)
-
-#    if (WIN32)
-#        set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec}.exe)
-#        set(RUN_CMD BuildetTests/${testExec}.exe)
-
-#    endif (WIN32)
-
-#    find_program(Q_MAKE_EXE qmake)
-
-#    find_program(CQT_EXE cqtdeployer)
-
-#    IF(NOT EXISTS ${CQT_EXE})
-#        message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
-#        return()
-#    endif(NOT EXISTS ${CQT_EXE})
-
-#    ADD_CUSTOM_TARGET(
-#        deployTest${name}
-#        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
-#        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -targetDir BuildetTests -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
-#        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-#        )
-
-#    ADD_CUSTOM_TARGET(
-#        test${name}
-#        COMMAND ${RUN_CMD} ${arg}
-#        COMMENT "=================== Run Test ==================="
-#        WORKING_DIRECTORY ${DIR_FOR_TESTING}/${name}
-#        DEPENDS deployTest${name}
-#    )
-
-#    set(TEST_TARGETS_LIST ${TEST_TARGETS_LIST} test${name} PARENT_SCOPE)
-
-#    message("prepare tests for ${RUN_CMD} with arg : ${arg}")
-
-#endfunction()
-
-#function(addTests name testExec)
-
-#    if(TARGET test${name})
-#        message("the test${name} target already created!")
-#        return()
-
-#    endif(TARGET test${name})
-
-#    set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec})
-#    set(RUN_CMD ${PROJECT_SOURCE_DIR}/BuildetTests/${testExec}.sh)
-
-#    if (WIN32)
-#        set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec}.exe)
-#        set(RUN_CMD ${PROJECT_SOURCE_DIR}/BuildetTests/${testExec}.exe)
-
-#    endif (WIN32)
-
-#    find_program(Q_MAKE_EXE qmake)
-
-#    find_program(CQT_EXE cqtdeployer)
-
-#    IF(NOT EXISTS ${CQT_EXE})
-#        message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
-#        return()
-#    endif(NOT EXISTS ${CQT_EXE})
-
-#    ADD_CUSTOM_TARGET(
-#        deployTest${name}
-#        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
-#        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -targetDir BuildetTests -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
-#    )
-
-#    add_test(
-#        test${name}
-#        COMMAND ${RUN_CMD}
-#        COMMENT "=================== Run Test ==================="
-#        WORKING_DIRECTORY BuildetTests
-#        DEPENDS deployTest${name}
-#    )
-#    set(TEST_TARGETS_LIST ${TEST_TARGETS_LIST} test${name} PARENT_SCOPE)
-
-#    message("prepare tests for ${RUN_CMD}")
-
-#endfunction()
 
 function(initDeploy)
 
@@ -507,8 +392,52 @@ function(addReleaseQif name sourceDir targetDir)
 
 endfunction()
 
+function(addDoc name doxygenFile)
+
+    if(TARGET doxygen${name})
+        message("the doxygen${name} target already created!")
+        return()
+
+    endif(TARGET doxygen${name})
+
+    find_program(DOXYGEN_EXECUTABLE doxygen)
+
+    IF(NOT EXISTS ${DOXYGEN_EXECUTABLE})
+        message("the doxygen not exits please install or add a path to doxygen to a PATH envirement variable and run cmake again!")
+        return()
+    endif(NOT EXISTS ${DOXYGEN_EXECUTABLE})
+
+    ADD_CUSTOM_TARGET(
+        doxygen${name}
+        COMMAND ${DOXYGEN_EXECUTABLE} ${doxygenFile}
+        COMMENT "${DOXYGEN_EXECUTABLE} ${doxygenFile}"
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+
+    )
+
+    set(DOC_TARGETS_LIST ${DOC_TARGETS_LIST} doxygen${name} PARENT_SCOPE)
+endfunction()
+
+function(initDoc)
+    if(TARGET doc)
+        message("the doc target already created!")
+        return()
+
+    endif(TARGET doc)
+
+    message("doc subtargets: ${DOC_TARGETS_LIST}")
+
+    ADD_CUSTOM_TARGET(
+        doc
+        COMMENT "=================== Run generate docs ==================="
+        DEPENDS ${DOC_TARGETS_LIST}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    )
+
+endfunction()
+
 function(initAll)
-#    initTests()
+    initDoc()
     initDeploy()
     initRelease()
 
