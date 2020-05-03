@@ -59,13 +59,22 @@
 # *** Release ***
 # initRelease() // create the general release target for all subtargets addRelease. This method need to call after invoce all addRelease methods.
 #
-# initReleaseSnap(name) // create subtargets for publish snap deployed snap package
+# addReleaseSnap(name) // create subtargets for publish snap deployed snap package
 # - name - this is prefix of added subtarget (any word)
 #
-# initReleaseQif(name sourceDir targetDir) // create subtargets for publish the qif package on qif repository
+# addReleaseQif(name sourceDir targetDir) // create subtargets for publish the qif package on qif repository
 # - name - this is prefix of added subtarget (any word)
 # - sourceDir - path to folder with qif template
 # - targetDir - path to target derictory
+#
+#
+# *** Dcumentation ***
+# initDoc() // create the general doc target for all subtargets addDoc. This method need to call after invoce all addDoc methods.
+#
+# addDoc(name doxygenFile) // create subtargets for generate documentation of cpp code
+# - name - this is prefix of added subtarget (any word)
+# - doxygenFile - this is path to doxygen configuration file
+#
 
 
 if(DEFINED QUASARAPP_DEFAULT_TARGETS)
@@ -74,6 +83,7 @@ else()
   set(QUASARAPP_DEFAULT_TARGETS 1)
 endif()
 
+set(DOC_TARGETS_LIST "")
 set(TEST_TARGETS_LIST "")
 set(DEPLOY_TARGETS_LIST "")
 set(RELEASE_TARGETS_LIST "")
@@ -509,8 +519,53 @@ function(addReleaseQif name sourceDir targetDir)
 
 endfunction()
 
+function(addDoc name doxygenFile)
+
+    if(TARGET doxygen${name})
+        message("the doxygen${name} target already created!")
+        return()
+
+    endif(TARGET doxygen${name})
+
+    find_program(DOXYGEN_EXECUTABLE doxygen)
+
+    IF(NOT EXISTS ${DOXYGEN_EXECUTABLE})
+        message("the doxygen not exits please install or add a path to doxygen to a PATH envirement variable and run cmake again!")
+        return()
+    endif(NOT EXISTS ${DOXYGEN_EXECUTABLE})
+
+    ADD_CUSTOM_TARGET(
+        doxygen${name}
+        COMMAND ${DOXYGEN_EXECUTABLE} ${doxygenFile}
+        COMMENT "${DOXYGEN_EXECUTABLE} ${doxygenFile}"
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+
+    )
+
+    set(DOC_TARGETS_LIST ${DOC_TARGETS_LIST} doxygen${name} PARENT_SCOPE)
+endfunction()
+
+function(initDoc)
+    if(TARGET doc)
+        message("the doc target already created!")
+        return()
+
+    endif(TARGET doc)
+
+    message("doc subtargets: ${DOC_TARGETS_LIST}")
+
+    ADD_CUSTOM_TARGET(
+        doc
+        COMMENT "=================== Run generate docs ==================="
+        DEPENDS ${DOC_TARGETS_LIST}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    )
+
+endfunction()
+
 function(initAll)
     initTests()
+    initDoc()
     initDeploy()
     initRelease()
 
