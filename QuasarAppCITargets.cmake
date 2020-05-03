@@ -77,7 +77,7 @@ endif()
 set(TEST_TARGETS_LIST "")
 set(DEPLOY_TARGETS_LIST "")
 set(RELEASE_TARGETS_LIST "")
-set(DIR_FOR_TESTING ${PROJECT_SOURCE_DIR}/BuildetTests)
+set(DIR_FOR_TESTING ${PROJECT_SOURCE_DIR}/Testing)
 
 function(emptyTarget targetName)
 
@@ -93,116 +93,118 @@ function(emptyTarget targetName)
 
 endfunction()
 
-#function(initTests)
+function(initTests)
 
-#    if(TARGET test)
-#        message("the test target already created!")
-#        return()
+    if(TARGET test)
+        message("the test target already created!")
+        return()
 
-#    endif(TARGET test)
+    endif(TARGET test)
 
-#    message("test sub targets: ${TEST_TARGETS_LIST}")
+    message("test sub targets: ${TEST_TARGETS_LIST}")
 
-#    ADD_CUSTOM_TARGET(
-#        test
-#        COMMENT "=================== Run Test ==================="
-#        DEPENDS ${TEST_TARGETS_LIST}
-#    )
+    ADD_CUSTOM_TARGET(
+        test
+        COMMENT "=================== Run Test ==================="
+        DEPENDS ${TEST_TARGETS_LIST}
+    )
 
-#    message("prepare tests for ${TEST_TARGETS_LIST}")
+    message("prepare tests for ${TEST_TARGETS_LIST}")
 
-#endfunction()
+endfunction()
 
-#function(addTestsArg name testExec arg)
+function(addTestsArg name testExec arg)
 
-#    if(TARGET test${name})
-#        message("the test${name} target already created!")
-#        return()
-#    endif(TARGET test${name})
+    if(TARGET test${name})
+        message("the test${name} target already created!")
+        return()
+    endif(TARGET test${name})
 
-#    set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec})
-#    set(RUN_CMD BuildetTests/${testExec}.sh)
+    set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec})
+    set(RUN_CMD ${DIR_FOR_TESTING}/${name}/${testExec}.sh)
 
-#    if (WIN32)
-#        set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec}.exe)
-#        set(RUN_CMD BuildetTests/${testExec}.exe)
+    if (WIN32)
+        set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec}.exe)
+        set(RUN_CMD ${DIR_FOR_TESTING}/${name}/${testExec}.exe)
 
-#    endif (WIN32)
+    endif (WIN32)
 
-#    find_program(Q_MAKE_EXE qmake)
+    find_program(Q_MAKE_EXE qmake)
 
-#    find_program(CQT_EXE cqtdeployer)
+    find_program(CQT_EXE cqtdeployer)
 
-#    IF(NOT EXISTS ${CQT_EXE})
-#        message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
-#        return()
-#    endif(NOT EXISTS ${CQT_EXE})
+    IF(NOT EXISTS ${CQT_EXE})
+        message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
+        return()
+    endif(NOT EXISTS ${CQT_EXE})
 
-#    ADD_CUSTOM_TARGET(
-#        deployTest${name}
-#        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
-#        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -targetDir BuildetTests -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
-#        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-#        )
 
-#    ADD_CUSTOM_TARGET(
-#        test${name}
-#        COMMAND ${RUN_CMD} ${arg}
-#        COMMENT "=================== Run Test ==================="
-#        WORKING_DIRECTORY ${DIR_FOR_TESTING}/${name}
-#        DEPENDS deployTest${name}
-#    )
+    ADD_CUSTOM_TARGET(
+        deployTest${name}
+        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
+        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        )
 
-#    set(TEST_TARGETS_LIST ${TEST_TARGETS_LIST} test${name} PARENT_SCOPE)
+    ADD_CUSTOM_TARGET(
+        test${name}
+        COMMAND ${RUN_CMD} ${arg}
+        COMMENT "=================== Run Test ==================="
+        WORKING_DIRECTORY ${DIR_FOR_TESTING}/${name}
+        DEPENDS deployTest${name}
+    )
 
-#    message("prepare tests for ${RUN_CMD} with arg : ${arg}")
+    set(TEST_TARGETS_LIST ${TEST_TARGETS_LIST} test${name} PARENT_SCOPE)
 
-#endfunction()
+    message("prepare tests for ${RUN_CMD} with arg : ${arg}")
 
-#function(addTests name testExec)
+endfunction()
 
-#    if(TARGET test${name})
-#        message("the test${name} target already created!")
-#        return()
+function(addTests name testExec)
 
-#    endif(TARGET test${name})
+    if(TARGET test${name})
+        message("the test${name} target already created!")
+        return()
 
-#    set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec})
-#    set(RUN_CMD ${PROJECT_SOURCE_DIR}/BuildetTests/${testExec}.sh)
+    endif(TARGET test${name})
 
-#    if (WIN32)
-#        set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec}.exe)
-#        set(RUN_CMD ${PROJECT_SOURCE_DIR}/BuildetTests/${testExec}.exe)
+    set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec})
+    set(RUN_CMD ${DIR_FOR_TESTING}/${name}/${testExec}.sh)
 
-#    endif (WIN32)
+    if (WIN32)
+        set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec}.exe)
+        set(RUN_CMD ${DIR_FOR_TESTING}/${name}/${testExec}.exe)
 
-#    find_program(Q_MAKE_EXE qmake)
+    endif (WIN32)
 
-#    find_program(CQT_EXE cqtdeployer)
+    find_program(Q_MAKE_EXE qmake)
 
-#    IF(NOT EXISTS ${CQT_EXE})
-#        message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
-#        return()
-#    endif(NOT EXISTS ${CQT_EXE})
+    find_program(CQT_EXE cqtdeployer)
 
-#    ADD_CUSTOM_TARGET(
-#        deployTest${name}
-#        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
-#        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -targetDir BuildetTests -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
-#    )
+    IF(NOT EXISTS ${CQT_EXE})
+        message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
+        return()
+    endif(NOT EXISTS ${CQT_EXE})
 
-#    add_test(
-#        test${name}
-#        COMMAND ${RUN_CMD}
-#        COMMENT "=================== Run Test ==================="
-#        WORKING_DIRECTORY BuildetTests
-#        DEPENDS deployTest${name}
-#    )
-#    set(TEST_TARGETS_LIST ${TEST_TARGETS_LIST} test${name} PARENT_SCOPE)
+    ADD_CUSTOM_TARGET(
+        deployTest${name}
+        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
+        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
+    )
 
-#    message("prepare tests for ${RUN_CMD}")
 
-#endfunction()
+    ADD_CUSTOM_TARGET(
+        test${name}
+        COMMAND ${RUN_CMD}
+        COMMENT "=================== Run Test ==================="
+        WORKING_DIRECTORY ${DIR_FOR_TESTING}/${name}
+        DEPENDS deployTest${name}
+    )
+    set(TEST_TARGETS_LIST ${TEST_TARGETS_LIST} test${name} PARENT_SCOPE)
+
+    message("prepare tests for ${RUN_CMD}")
+
+endfunction()
 
 function(initDeploy)
 
@@ -508,7 +510,7 @@ function(addReleaseQif name sourceDir targetDir)
 endfunction()
 
 function(initAll)
-#    initTests()
+    initTests()
     initDeploy()
     initRelease()
 
