@@ -346,21 +346,22 @@ function(addDeploySnap name targetDir)
         COMMAND snapcraft
         COMMENT "create snap: snapcraft"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        DEPENDS deploy${name}
+        DEPENDS deploy${name} snapClear${name}
     )
 
     ADD_CUSTOM_TARGET(
         snapcraftCopy${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.snap ${targetDir}
-        COMMENT "copt snap: ${CMAKE_COMMAND} -E copy *.snap ${targetDir}"
+        COMMENT "copy snap: ${CMAKE_COMMAND} -E copy *.snap ${targetDir}"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        DEPENDS snapcraft${name}
 
     )
 
     ADD_CUSTOM_TARGET(
         snap${name}
         COMMENT "deploy snap${name}"
-        DEPENDS snapClear${name} snapcraft${name} snapcraftCopy${name}
+        DEPENDS snapcraftCopy${name}
 
     )
 
