@@ -225,6 +225,7 @@ function(initDeploy)
     endif(TARGET deploy)
 
     message("deploy subtargets: ${DEPLOY_TARGETS_LIST}")
+    file(MAKE_DIRECTORY ${PROJECT_SOURCE_DIR}/"Distro")
 
 
     ADD_CUSTOM_TARGET(
