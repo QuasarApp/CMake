@@ -19,7 +19,7 @@
 # - name - prefix for taget (any word)
 # - testExec - name of tests utility (without extensions)
 #
-# initTests - init main test target for tessting all added tests, this method need to call after all invoced addTests methods.
+# initTests - init main test target for tessting all added tests, this method need to call befor all invoced addTests methods.
 #
 #
 # *** Deployment ***
@@ -53,11 +53,11 @@
 # - keystorePass - pass of keystore file
 # - targetDir - target dir for output apk file
 #
-# initDeploy() // create a main deploy target fpr all addDeploy subtargets. this method need to call fater invoced of all addDeploy methods
+# initDeploy() // create a main deploy target fpr all addDeploy subtargets. this method need to call befor invoced of all addDeploy methods
 #
 #
 # *** Release ***
-# initRelease() // create the general release target for all subtargets addRelease. This method need to call after invoce all addRelease methods.
+# initRelease() // create the general release target for all subtargets addRelease. This method need to call befor invoce all addRelease methods.
 #
 # addReleaseSnap(name) // create subtargets for publish snap deployed snap package
 # - name - this is prefix of added subtarget (any word)
@@ -69,7 +69,7 @@
 #
 #
 # *** Dcumentation ***
-# initDoc() // create the general doc target for all subtargets addDoc. This method need to call after invoce all addDoc methods.
+# initDoc() // create the general doc target for all subtargets addDoc. This method need to call befor invoce all addDoc methods.
 #
 # addDoc(name doxygenFile) // create subtargets for generate documentation of cpp code
 # - name - this is prefix of added subtarget (any word)
@@ -116,7 +116,7 @@ function(initTests)
     ADD_CUSTOM_TARGET(
         test
         COMMENT "=================== Run Test ==================="
-        DEPENDS ${TEST_TARGETS_LIST}
+        DEPENDS
     )
 
     message("prepare tests for ${TEST_TARGETS_LIST}")
@@ -164,9 +164,7 @@ function(addTestsArg name testExec arg)
         DEPENDS deployTest${name}
     )
 
-    set(TEST_TARGETS_LIST ${TEST_TARGETS_LIST} test${name} PARENT_SCOPE)
-
-    message("prepare tests for ${RUN_CMD} with arg : ${arg}")
+    add_dependencies(test test${name})
 
 endfunction()
 
@@ -210,7 +208,9 @@ function(addTests name testExec)
         WORKING_DIRECTORY ${DIR_FOR_TESTING}/${name}
         DEPENDS deployTest${name}
     )
-    set(TEST_TARGETS_LIST ${TEST_TARGETS_LIST} test${name} PARENT_SCOPE)
+
+    add_dependencies(test test${name})
+
 
     message("prepare tests for ${RUN_CMD}")
 
@@ -229,7 +229,6 @@ function(initDeploy)
     ADD_CUSTOM_TARGET(
         deploy
         COMMENT "=================== Run deploy ==================="
-        DEPENDS ${DEPLOY_TARGETS_LIST}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 
     )
@@ -260,7 +259,7 @@ function(addDeploy name targets targetDir)
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
 
-    set(DEPLOY_TARGETS_LIST ${DEPLOY_TARGETS_LIST} deploy${name} PARENT_SCOPE)
+    add_dependencies(deploy deploy${name})
 
 endfunction()
 
@@ -286,7 +285,7 @@ function(addDeployFromFile name)
         COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE}"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
-    set(DEPLOY_TARGETS_LIST ${DEPLOY_TARGETS_LIST} deploy${name} PARENT_SCOPE)
+    add_dependencies(deploy deploy${name})
 
 
 endfunction()
@@ -314,7 +313,7 @@ function(addDeployFromCustomFile name file)
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
 
-    set(DEPLOY_TARGETS_LIST ${DEPLOY_TARGETS_LIST} deploy${name} PARENT_SCOPE)
+    add_dependencies(deploy deploy${name})
 
 endfunction()
 
@@ -365,7 +364,7 @@ function(addDeploySnap name targetDir)
 
     )
 
-    set(DEPLOY_TARGETS_LIST ${DEPLOY_TARGETS_LIST} snap${name} PARENT_SCOPE)
+    add_dependencies(deploy snap${name})
 
 
 endfunction()
@@ -399,7 +398,7 @@ function(addDeployQIF name sourceDir targetDir config)
 
     )
 
-    set(DEPLOY_TARGETS_LIST ${DEPLOY_TARGETS_LIST} qifDeploy${name} PARENT_SCOPE)
+    add_dependencies(deploy qifDeploy${name})
 
 endfunction()
 
@@ -439,7 +438,8 @@ function(addDeployAPK name input aliase keystore keystorePass targetDir)
 
     )
 
-    set(DEPLOY_TARGETS_LIST ${DEPLOY_TARGETS_LIST} deployAPK${name} PARENT_SCOPE)
+    add_dependencies(deploy deployAPK${name})
+
 endfunction()
 
 function(initRelease)
@@ -454,7 +454,6 @@ function(initRelease)
     ADD_CUSTOM_TARGET(
         release
         COMMENT "=================== Relese project ==================="
-        DEPENDS ${RELEASE_TARGETS_LIST}
     )
 
 endfunction()
@@ -475,7 +474,8 @@ function(addReleaseSnap name)
 
     )
 
-    set(RELEASE_TARGETS_LIST ${RELEASE_TARGETS_LIST} snapRelease${name} PARENT_SCOPE)
+    add_dependencies(release snapRelease${name})
+
 endfunction()
 
 function(addReleaseQif name sourceDir targetDir)
@@ -516,6 +516,8 @@ function(addReleaseQif name sourceDir targetDir)
        )
 
    set(RELEASE_TARGETS_LIST ${RELEASE_TARGETS_LIST} qifRelease${name} PARENT_SCOPE)
+   add_dependencies(release qifRelease${name})
+
 
 endfunction()
 
@@ -542,7 +544,8 @@ function(addDoc name doxygenFile)
 
     )
 
-    set(DOC_TARGETS_LIST ${DOC_TARGETS_LIST} doxygen${name} PARENT_SCOPE)
+    add_dependencies(doc doxygen${name})
+
 endfunction()
 
 function(initDoc)
@@ -557,7 +560,6 @@ function(initDoc)
     ADD_CUSTOM_TARGET(
         doc
         COMMENT "=================== Run generate docs ==================="
-        DEPENDS ${DOC_TARGETS_LIST}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
 
