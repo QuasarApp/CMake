@@ -26,11 +26,15 @@ add_link_options("SHELL:-s EXTRA_EXPORTED_RUNTIME_METHODS=[\"UTF16ToString\",\"s
 
 add_link_options("--bind")
 
-set(CMAKE_C_COMPILER emcc)
+find_program(EM_CC emcc)
+
+set(CMAKE_C_COMPILER ${EM_CC})
 #set_property(GLOBAL PROPERTY CMAKE_C_COMPILER emcc)
 #add_definitions(-DCMAKE_C_COMPILER="emcc")
 
-set(CMAKE_CXX_COMPILER em++)
+
+find_program(EM_CXX em++)
+set(CMAKE_CXX_COMPILER ${EM_CXX})
 #set_property(GLOBAL PROPERTY CMAKE_CXX_COMPILER em++)
 #add_definitions(-DCMAKE_CXX_COMPILER="em++")
 set(BUILD_SHARED_LIBS OFF)
