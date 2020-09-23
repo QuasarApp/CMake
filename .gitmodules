@@ -1,0 +1,3 @@
+[submodule "QtStaticCMake"]
+	path = QtStaticCMake
+	url = https://github.com/OlivierLDff/QtStaticCMake

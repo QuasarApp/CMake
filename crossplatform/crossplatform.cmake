@@ -27,3 +27,41 @@ else(EXISTS ${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH})
     message("${TARGET_PLATFORM_TOOLCHAIN} not exits in ${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH}")
 endif()
 
+function(initWasmSupport name deployFile)
+    if(NOT TARGET ${name})
+        message("the ${name} target is not created!")
+        return()
+
+    endif(NOT TARGET ${name})
+
+    message("init support wasm build for target ${name}")
+
+    if (DEFINED TARGET_PLATFORM_TOOLCHAIN)
+        if (${TARGET_PLATFORM_TOOLCHAIN} STREQUAL "wasm32")
+            message(added deploy step for site)
+            set_target_properties(${name} PROPERTIES OUTPUT_NAME "${name}.js")
+
+            addDeployFromFile(${deployFile})
+
+            include(${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../QtStaticCMake/QtStaticCMake.cmake)
+
+            qt_generate_plugin_import(${name} VERBOSE)
+
+            # EXTRA_PLUGIN are the one required by plugin loaded by qt_generate_plugin_import
+            # It's not automatic yet :( All this workflow might change in future version of qt
+            # with better and better cmake support
+            qt_generate_qml_plugin_import(${name}
+              QML_SRC ${CMAKE_CURRENT_SOURCE_DIR}
+              EXTRA_PLUGIN
+                QtQuickVirtualKeyboardPlugin
+                QtQuickVirtualKeyboardSettingsPlugin
+                QtQuickVirtualKeyboardStylesPlugin
+                QmlFolderListModelPlugin
+                QQuickLayoutsPlugin
+              VERBOSE
+            )
+
+        endif(${TARGET_PLATFORM_TOOLCHAIN} STREQUAL "wasm32")
+    endif(DEFINED TARGET_PLATFORM_TOOLCHAIN)
+
+endfunction()
