@@ -23,20 +23,15 @@ add_link_options("SHELL:-s USE_WEBGL2=1")
 add_link_options("SHELL:-s EXIT_RUNTIME=1")
 add_link_options("SHELL:-s ERROR_ON_UNDEFINED_SYMBOLS=1")
 add_link_options("SHELL:-s EXTRA_EXPORTED_RUNTIME_METHODS=[\"UTF16ToString\",\"stringToUTF16\"]")
+add_link_options("SHELL:-s ALLOW_MEMORY_GROWTH=1")
 
 add_link_options("--bind")
 
 find_program(EM_CC emcc)
-
 set(CMAKE_C_COMPILER ${EM_CC} CACHE FILEPATH "CC Compiller of Wasm" FORCE)
-#set_property(GLOBAL PROPERTY CMAKE_C_COMPILER emcc)
-#add_definitions(-DCMAKE_C_COMPILER="emcc")
-
 
 find_program(EM_CXX em++)
 set(CMAKE_CXX_COMPILER ${EM_CXX} CACHE FILEPATH "CXX Compiller of Wasm" FORCE)
-#set_property(GLOBAL PROPERTY CMAKE_CXX_COMPILER em++)
-#add_definitions(-DCMAKE_CXX_COMPILER="em++")
+
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "CXX Compiller of Wasm" FORCE)
-#set_property(GLOBAL PROPERTY BUILD_SHARED_LIBS OFF)
-#add_definitions(-DBUILD_SHARED_LIBS="OFF")
+
