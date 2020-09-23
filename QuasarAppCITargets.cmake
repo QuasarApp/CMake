@@ -281,8 +281,8 @@ function(addDeployFromFile name)
 
     ADD_CUSTOM_TARGET(
         deploy${name}
-        COMMAND cqtdeployer -qmake ${Q_MAKE_EXE}
-        COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE}"
+        COMMAND cqtdeployer -qmake ${Q_MAKE_EXE} -confFile ${name}
+        COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE} -confFile ${name}"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
     add_dependencies(deploy deploy${name})
