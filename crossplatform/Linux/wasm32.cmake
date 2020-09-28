@@ -35,3 +35,4 @@ set(CMAKE_CXX_COMPILER ${EM_CXX} CACHE FILEPATH "CXX Compiller of Wasm" FORCE)
 
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "CXX Compiller of Wasm" FORCE)
 
+add_definitions( -DWASM32_BUILD )

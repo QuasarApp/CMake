@@ -39,6 +39,7 @@ function(initWasmSupport name deployFile)
     if (DEFINED TARGET_PLATFORM_TOOLCHAIN)
         if (${TARGET_PLATFORM_TOOLCHAIN} STREQUAL "wasm32")
             message(added deploy step for site)
+
             set_target_properties(${name} PROPERTIES OUTPUT_NAME "${name}.js")
 
             addDeployFromFile(${deployFile})
