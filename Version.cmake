@@ -21,3 +21,14 @@ function(setVersion maj min rev)
       )
 
 endfunction()
+
+function(setVersionForTarget TERAGET maj min rev)
+
+    SET_TARGET_PROPERTIES(
+      ${TERAGET}
+      PROPERTIES
+        VERSION "${maj}.${min}.${rev}"
+        SOVERSION "${maj}.${min}.${rev}"
+      )
+
+endfunction()
