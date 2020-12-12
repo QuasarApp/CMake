@@ -5,6 +5,11 @@
 # of this license document, but changing it is not allowed.
 #
 
+#
+# This module configure pathes of the targets.
+# If you include this method befor adding targets then tahen all targets of subproject reconfigured for root project when this vile has been invoked.
+#
+
 if(DEFINED PROJECT_OUT_SUPPORT)
   return()
 else()

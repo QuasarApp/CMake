@@ -8,6 +8,9 @@
 
 # This module implementation next cmake cunctions :
 #
+# This library contains 2 methods type it is Addd methods and Init Methods
+# All inits method must be invoked befor adds methods. If you change order then some add method will be ignored.
+
 #
 # ***Testing***
 # addTestsArg( name testExec arg ) // name target for test utiliry of your application
