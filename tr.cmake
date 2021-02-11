@@ -15,6 +15,7 @@ function(prepareQM sourceDir ts_files)
 
     find_program(LUPDATE_EXECUTABLE lupdate)
     find_program(LRELEASE_EXECUTABLE lrelease)
+    message(supported translations = ${ts_files})
 
     foreach(_ts_file ${ts_files})
 
