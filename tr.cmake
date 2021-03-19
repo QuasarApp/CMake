@@ -11,13 +11,13 @@ else()
   set(PROJECT_TR_SUPPORT 1)
 endif()
 
-function(prepareQM sourceDir ts_files)
+function(prepareQM name sourceDir ts_files)
 
     find_program(LUPDATE_EXECUTABLE lupdate)
     find_program(LRELEASE_EXECUTABLE lrelease)
     message(supported translations = ${ts_files})
 
-    add_custom_target(Translations ALL
+    add_custom_target(${name}Translations ALL
         SOURCES ${ts_files}
     )
 
