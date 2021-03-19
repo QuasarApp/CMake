@@ -5,12 +5,20 @@
 # of this license document, but changing it is not allowed.
 #
 
+# This module provides translations functionality.
+# The tr module contains only prepareQM function.
+
 if(DEFINED PROJECT_TR_SUPPORT)
   return()
 else()
   set(PROJECT_TR_SUPPORT 1)
 endif()
 
+# This function prepare translations for you prijects
+# Arguments :
+#  name - it is name of the translations target.
+#  sourceDir - it is root source directory. lupdate will be scan this dir for prepare translations.
+#  ts_files - it is list of the supported languages.
 function(prepareQM name sourceDir ts_files)
 
     find_program(LUPDATE_EXECUTABLE lupdate)

@@ -5,6 +5,9 @@
 # of this license document, but changing it is not allowed.
 #
 
+
+# This module adds support of the ccache.
+# If you include this cmake file in the main cmakList file then your project will be use the ccace on to the compilator
 if(DEFINED CCACHE_SUPPORT)
   return()
 else()
