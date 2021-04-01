@@ -10,7 +10,7 @@
 # Availabel functions:
 # *********************
 # The prepareQM function - This function prepare translations for you prijects
-# The includeQt function - This function search package for the qt6 or qt5 with requir modules and check if a sought package is already included.
+
 
 if(DEFINED PROJECT_QT_UTILS_SUPPORT)
   return()
