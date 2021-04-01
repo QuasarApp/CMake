@@ -45,29 +45,3 @@ function(prepareQM name sourceDir ts_files)
 
 endfunction()
 
-
-# This function search package for the qt6 or qt5 with requir modules and check if a sought package is already included.
-# Arguments :
-#  ModulesList - This is mist of requir modules of the qt.
-function(includeQt ModulesList)
-
-    foreach(module ${ModulesList})
-        if (NOT Qt${QT_VERSION_MAJOR}_${module}_FOUND)
-            find_package(QT NAMES Qt6 Qt5 COMPONENTS ${module} REQUIRED)
-            find_package(Qt${QT_VERSION_MAJOR} COMPONENTS ${module} REQUIRED)
-
-            set(Qt${QT_VERSION_MAJOR}_${module}_FOUND ON)
-            message(STATUS "The qt ${module} is found")
-
-        elseif()
-            message(STATUS "The qt ${module} is alredy found")
-        endif()
-
-    endforeach()
-
-
-    set(CMAKE_AUTOMOC ON)
-    set(CMAKE_AUTORCC ON)
-
-
-endfunction()
