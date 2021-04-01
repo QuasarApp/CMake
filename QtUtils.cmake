@@ -52,16 +52,15 @@ endfunction()
 function(includeQt ModulesList)
 
     foreach(module ${ModulesList})
-        message ("try find the QT_${module} ")
         if (NOT Qt${QT_VERSION_MAJOR}_${module}_FOUND)
             find_package(QT NAMES Qt6 Qt5 COMPONENTS ${module} REQUIRED)
             find_package(Qt${QT_VERSION_MAJOR} COMPONENTS ${module} REQUIRED)
 
             set(Qt${QT_VERSION_MAJOR}_${module}_FOUND ON)
-            message("The qt ${module} is found")
+            message(STATUS "The qt ${module} is found")
 
         elseif()
-            message("The qt ${module} is alredy found")
+            message(STATUS "The qt ${module} is alredy found")
         endif()
 
     endforeach()
