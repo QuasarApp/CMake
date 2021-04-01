@@ -144,13 +144,6 @@ function(addTestsArg name testExec arg)
 
     find_program(Q_MAKE_EXE qmake)
 
-    find_program(CQT_EXE cqtdeployer)
-
-    IF(NOT EXISTS ${CQT_EXE})
-        message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
-        return()
-    endif(NOT EXISTS ${CQT_EXE})
-
 
     ADD_CUSTOM_TARGET(
         deployTest${name}
@@ -189,13 +182,6 @@ function(addTests name testExec)
     endif (WIN32)
 
     find_program(Q_MAKE_EXE qmake)
-
-    find_program(CQT_EXE cqtdeployer)
-
-    IF(NOT EXISTS ${CQT_EXE})
-        message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
-        return()
-    endif(NOT EXISTS ${CQT_EXE})
 
     ADD_CUSTOM_TARGET(
         deployTest${name}
@@ -248,13 +234,6 @@ function(addDeploy name targets targetDir)
 
     find_program(Q_MAKE_EXE qmake)
 
-    find_program(CQT_EXE cqtdeployer)
-
-    IF(NOT EXISTS ${CQT_EXE})
-        message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
-        return()
-    endif(NOT EXISTS ${CQT_EXE})
-
     ADD_CUSTOM_TARGET(
         deploy${name}
         COMMAND cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
@@ -275,12 +254,6 @@ function(addDeployFromFile name)
     endif(TARGET deploy${name})
 
     find_program(Q_MAKE_EXE qmake)
-    find_program(CQT_EXE cqtdeployer)
-
-    IF(NOT EXISTS ${CQT_EXE})
-        message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
-        return()
-    endif(NOT EXISTS ${CQT_EXE})
 
     ADD_CUSTOM_TARGET(
         deploy${name}
@@ -302,12 +275,6 @@ function(addDeployFromCustomFile name file)
     endif(TARGET deploy${name})
 
     find_program(Q_MAKE_EXE qmake)
-    find_program(CQT_EXE cqtdeployer)
-
-    IF(NOT EXISTS ${CQT_EXE})
-        message("the cqtdeployer not exits please install the cqtdeployer and run cmake again!")
-        return()
-    endif(NOT EXISTS ${CQT_EXE})
 
     ADD_CUSTOM_TARGET(
         deploy${name}
