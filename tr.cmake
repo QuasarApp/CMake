@@ -15,4 +15,4 @@ else()
 endif()
 
 
-include(QtFunctions.cmake)
+include(QtUtils.cmake)
