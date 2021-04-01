@@ -30,3 +30,4 @@ include(QtUtils.cmake)
 
 initAll()
 
+addDoc(${PROJECT_NAME}Docs ${CMAKE_CURRENT_SOURCE_DIR}/doxygen.conf)
