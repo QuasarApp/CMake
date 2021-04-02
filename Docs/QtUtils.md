@@ -1,10 +1,11 @@
-# This is description of cmake module TR
+# This is description of cmake module QtUtils
 
-This module provides translations functionality.
-The tr module contains only prepare QM function.
+Module provides qt utils functions 
+The module provides qt utils functions. This module contains some useful functions. Including provides translations functionality.
 
 ---
-
+## Translation
+--- 
 **prepareQM** (name sourceDir ts_files) - This function prepare translations for you projects.
  - name - This is a name of the translations target.
  - sourceDir - This is root source directory. Update will be scan this dir for prepare translations.
