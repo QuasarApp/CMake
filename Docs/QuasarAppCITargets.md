@@ -74,4 +74,3 @@ This module implementation next cmake functions:
  **addDoc** (name doxygenFile) - Create subtargets for generate documentation of cpp code.
  - name - This is prefix of added subtarget (any word).
  - doxygenFile - This is path to doxygen configuration file.
----
