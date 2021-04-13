@@ -147,9 +147,9 @@ function(addTestsArg name testExec arg)
 
     ADD_CUSTOM_TARGET(
         deployTest${name}
-        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
-        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5
+        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         )
 
     ADD_CUSTOM_TARGET(
@@ -185,8 +185,8 @@ function(addTests name testExec)
 
     ADD_CUSTOM_TARGET(
         deployTest${name}
-        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
-        COMMENT "cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
+        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5
+        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
     )
 
 
@@ -218,7 +218,7 @@ function(initDeploy)
     ADD_CUSTOM_TARGET(
         deploy
         COMMENT "=================== Run deploy ==================="
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 
     )
 
@@ -236,9 +236,9 @@ function(addDeploy name targets targetDir)
 
     ADD_CUSTOM_TARGET(
         deploy${name}
-        COMMAND cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5
-        COMMENT "Deploy: cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${PROJECT_SOURCE_DIR} -recursiveDepth 5"
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMAND cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5
+        COMMENT "Deploy: cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 
     add_dependencies(deploy deploy${name})
@@ -259,7 +259,7 @@ function(addDeployFromFile name)
         deploy${name}
         COMMAND cqtdeployer -qmake ${Q_MAKE_EXE} -confFile ${name}
         COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE} -confFile ${name}"
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
     add_dependencies(deploy deploy${name})
 
@@ -280,7 +280,7 @@ function(addDeployFromCustomFile name file)
         deploy${name}
         COMMAND cqtdeployer -qmake ${Q_MAKE_EXE} -confFile ${file}
         COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE} -confFile ${file}"
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 
     add_dependencies(deploy deploy${name})
@@ -306,7 +306,7 @@ function(addDeploySnap name targetDir)
         snapClear${name}
         COMMAND snapcraft clean
         COMMENT "clear snap: snapcraft clear"
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 
     )
 
@@ -314,7 +314,7 @@ function(addDeploySnap name targetDir)
         snapcraft${name}
         COMMAND snapcraft
         COMMENT "create snap: snapcraft"
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         DEPENDS deploy${name} snapClear${name}
     )
 
@@ -322,7 +322,7 @@ function(addDeploySnap name targetDir)
         snapcraftCopy${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.snap ${targetDir}
         COMMENT "copy snap: ${CMAKE_COMMAND} -E copy *.snap ${targetDir}"
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         DEPENDS snapcraft${name}
 
     )
@@ -363,7 +363,7 @@ function(addDeployQIF name sourceDir targetDir config)
         qifDeploy${name}
         COMMAND ${BINARYCREATOR_EXE} --offline-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}
         COMMENT "deploy qif: ${BINARYCREATOR_EXE} --offline-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}"
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         DEPENDS deploy${name}
 
     )
@@ -386,7 +386,7 @@ function(addDeployAPK name input aliase keystore keystorePass targetDir)
     endif(NOT DEFINED $ENV{ANDROID_HOME})
 
 
-    set(OUTPUT_ANDROID "--output ${PROJECT_SOURCE_DIR}/AndroidBuild")
+    set(OUTPUT_ANDROID "--output ${CMAKE_SOURCE_DIR}/AndroidBuild")
     set(INPUT_ANDROID "--input ${input}")
     set(JDK "--jdk /usr")
     set(SIGN "--sign '${keystore}' --storepass '${keystorePass}' --keypass '${keystorePass}' --release")
@@ -403,7 +403,7 @@ function(addDeployAPK name input aliase keystore keystorePass targetDir)
         deployAPK${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.apk ${targetDir}
         COMMENT "copt apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/AndroidBuild/build/outputs/apk/
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/AndroidBuild/build/outputs/apk/
         DEPENDS createAPK${name}
 
     )
@@ -440,7 +440,7 @@ function(addReleaseSnap name)
         snapRelease${name}
         COMMAND snapcraft push
         COMMENT "snapRelease${name} release"
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 
     )
 
@@ -471,7 +471,7 @@ function(addReleaseQif name sourceDir targetDir)
         qifDeployOnline${name}
         COMMAND ${BINARYCREATOR_EXE} --online-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}
         COMMENT "deploy qif online: ${BINARYCREATOR_EXE} --online-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}"
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 
     )
 
@@ -481,7 +481,7 @@ function(addReleaseQif name sourceDir targetDir)
         ${sourceDir}
         ${CMAKE_BINARY_DIR}/Repo
         COMMENT "qifRelease${name} release ${CMAKE_COMMAND} -E copy_directory ${sourceDir} ${CMAKE_BINARY_DIR}/Repo"
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         DEPENDS qifDeployOnline${name}
        )
 
@@ -530,7 +530,7 @@ function(initDoc)
     ADD_CUSTOM_TARGET(
         doc
         COMMENT "=================== Run generate docs ==================="
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 
 endfunction()
