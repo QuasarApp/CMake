@@ -386,7 +386,7 @@ function(addDeployAPK name input aliase keystore keystorePass targetDir)
     endif()
 
 
-    set(OUTPUT_ANDROID "--output ${CMAKE_SOURCE_DIR}/AndroidBuild")
+    set(OUTPUT_ANDROID "--output ${CMAKE_BINARY_DIR}/AndroidBuild")
     set(INPUT_ANDROID "--input ${input}")
     set(JDK "--jdk /usr")
     set(SIGN "--sign '${keystore}' --storepass '${keystorePass}' --keypass '${keystorePass}' --release")
@@ -403,7 +403,7 @@ function(addDeployAPK name input aliase keystore keystorePass targetDir)
         deployAPK${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.apk ${targetDir}
         COMMENT "copt apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/AndroidBuild/build/outputs/apk/
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/AndroidBuild/build/outputs/apk/
         DEPENDS createAPK${name}
 
     )
