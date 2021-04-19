@@ -380,10 +380,10 @@ function(addDeployAPK name input aliase keystore keystorePass targetDir)
 
     endif(TARGET deployAPK${name})
 
-    IF(NOT DEFINED $ENV{ANDROID_HOME})
-        message("the ANDROID_HOME is not defined. define ANDROID_HOME variable and run cmake again!")
+    IF(NOT DEFINED ENV{ANDROID_SDK_ROOT})
+        message("the ANDROID_SDK_ROOT is not defined. define ANDROID_SDK_ROOT variable and run cmake again!")
         return()
-    endif(NOT DEFINED $ENV{ANDROID_HOME})
+    endif()
 
 
     set(OUTPUT_ANDROID "--output ${CMAKE_SOURCE_DIR}/AndroidBuild")
