@@ -386,10 +386,10 @@ function(addDeployAPK name input aliase keystore keystorePass targetDir)
     endif()
 
 
-    set(OUTPUT_ANDROID "--output ${CMAKE_BINARY_DIR}/AndroidBuild")
-    set(INPUT_ANDROID "--input ${input}")
-    set(JDK "--jdk /usr")
-    set(SIGN "--sign '${keystore}' --storepass '${keystorePass}' --keypass '${keystorePass}' --release")
+    set(OUTPUT_ANDROID --output "${CMAKE_BINARY_DIR}/AndroidBuild")
+    set(INPUT_ANDROID --input "${input}")
+    set(JDK --jdk /usr)
+    set(SIGN --sign "${keystore}" --storepass ${keystorePass} --keypass ${keystorePass} --release)
 
     find_program(A_DEPLOYER androiddeployqt)
 
