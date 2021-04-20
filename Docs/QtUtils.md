@@ -1,10 +1,12 @@
-# This is description of cmake module QtUtils
+# QtUtils module 
 
 Module provides qt utils functions 
 The module provides qt utils functions. This module contains some useful functions. Including provides translations functionality.
 
 ---
+
 ## Translation
+ 
 --- 
 **prepareQM** (name sourceDir ts_files) - This function prepare translations for you projects.
  - name - This is a name of the translations target.
