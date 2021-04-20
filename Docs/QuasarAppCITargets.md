@@ -1,4 +1,5 @@
-# This is description of cmake module QuasarAppCITargets
+
+# QuasarAppCITargets module description
 
 The library contains 2 methods type it is added methods and init methods.
 All inits method must be invoked before adds methods. If you change order then some add method will be ignored.

@@ -1,4 +1,5 @@
-# This is description of cmake module QtUtils
+
+# QtUtils module description
 
 Module provides qt utils functions 
 The module provides qt utils functions. This module contains some useful functions. Including provides translations functionality.
