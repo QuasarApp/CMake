@@ -133,14 +133,19 @@ function(addTestsArg name testExec arg)
         return()
     endif(TARGET test${name})
 
-    set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec})
+    if (${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+        set(RUNTIME_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/)
+    endif()
+
+    set(EXEC_TEST ${RUNTIME_DIR}${testExec})
     set(RUN_CMD ${DIR_FOR_TESTING}/${name}/${testExec}.sh)
 
     if (WIN32)
-        set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec}.exe)
+        set(EXEC_TEST ${RUNTIME_DIR}${testExec}.exe)
         set(RUN_CMD ${DIR_FOR_TESTING}/${name}/${testExec}.exe)
 
     endif (WIN32)
+
 
     find_program(Q_MAKE_EXE qmake)
 
@@ -172,11 +177,15 @@ function(addTests name testExec)
 
     endif(TARGET test${name})
 
-    set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec})
+    if (${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+        set(RUNTIME_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/)
+    endif()
+
+    set(EXEC_TEST ${RUNTIME_DIR}${testExec})
     set(RUN_CMD ${DIR_FOR_TESTING}/${name}/${testExec}.sh)
 
     if (WIN32)
-        set(EXEC_TEST ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testExec}.exe)
+        set(EXEC_TEST ${RUNTIME_DIR}${testExec}.exe)
         set(RUN_CMD ${DIR_FOR_TESTING}/${name}/${testExec}.exe)
 
     endif (WIN32)
@@ -234,10 +243,14 @@ function(addDeploy name targets targetDir)
 
     find_program(Q_MAKE_EXE qmake)
 
+    if (${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+        set(RUNTIME_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/)
+    endif()
+
     ADD_CUSTOM_TARGET(
         deploy${name}
-        COMMAND cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5
-        COMMENT "Deploy: cqtdeployer clear -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
+        COMMAND cqtdeployer clear -binPrefix ${RUNTIME_DIR} -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5
+        COMMENT "Deploy: cqtdeployer clear -binPrefix ${RUNTIME_DIR} -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 
@@ -255,10 +268,14 @@ function(addDeployFromFile name)
 
     find_program(Q_MAKE_EXE qmake)
 
+    if (${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+        set(RUNTIME_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/)
+    endif()
+
     ADD_CUSTOM_TARGET(
         deploy${name}
-        COMMAND cqtdeployer -qmake ${Q_MAKE_EXE} -confFile ${name}
-        COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE} -confFile ${name}"
+        COMMAND cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix ${RUNTIME_DIR} -confFile ${name}
+        COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix ${RUNTIME_DIR} -confFile ${name}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
     add_dependencies(deploy deploy${name})
@@ -276,10 +293,14 @@ function(addDeployFromCustomFile name file)
 
     find_program(Q_MAKE_EXE qmake)
 
+    if (${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+        set(RUNTIME_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/)
+    endif()
+
     ADD_CUSTOM_TARGET(
         deploy${name}
-        COMMAND cqtdeployer -qmake ${Q_MAKE_EXE} -confFile ${file}
-        COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE} -confFile ${file}"
+        COMMAND cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix ${RUNTIME_DIR} -confFile ${file}
+        COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix ${RUNTIME_DIR} -confFile ${file}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 
