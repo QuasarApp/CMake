@@ -18,14 +18,16 @@
 # * Add default QussarApp  definition into code
 # * Initialise all default targets. See the QuasarAppCITargets module
 # * Initialise all qtUtils. See the QtUtils module
+# * Initialise all crossplatform toolchains. See the crossplatform module
+
 #
 # Supports Defines:
 #  * RELEASE_BUILD - will sets to true if the build type is release.
 
-if(DEFINED PROJECT_OUT_SUPPORT)
+if(DEFINED QUASARAPP_CMAKE_MODULE)
   return()
 else()
-  set(PROJECT_OUT_SUPPORT 1)
+  set(QUASARAPP_CMAKE_MODULE 1)
 endif()
 
 IF(NOT CMAKE_BUILD_TYPE)
@@ -41,6 +43,7 @@ ENDIF()
 include(${CMAKE_CURRENT_LIST_DIR}/ccache.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/QuasarAppCITargets.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/QtUtils.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/crossplatform/crossplatform.cmake)
 
 message(STATUS "buid type    " ${CMAKE_BUILD_TYPE})
 message(STATUS "Project      " ${PROJECT_NAME})
