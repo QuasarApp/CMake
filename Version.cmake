@@ -11,6 +11,24 @@ else()
   set(PROJECT_VERSIONS_SUPPORT 1)
 endif()
 
+# This module contains function that sets version of the build libraryes.
+# AVailable function
+# setVersion - sets version for target with name PROJECT_NAME
+# arguments :
+#  * maj - are number of majur version
+#  * min - are number of minor version
+#  * rev - are number of review version
+#
+# setVersionForTarget - sets version for target with a custom name.
+# arguments :
+#  * target - are target name of the executable file or library.
+#  * maj - are number of majur version
+#  * min - are number of minor version
+#  * rev - are number of review version
+#
+#
+# Note This module is deprecated.
+#
 function(setVersion maj min rev)
 
     SET_TARGET_PROPERTIES(

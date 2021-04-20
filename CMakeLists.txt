@@ -20,12 +20,8 @@ if(TARGET ${PROJECT_NAME})
 endif()
 
 cmake_minimum_required(VERSION 3.12)
-include(crossplatform/crossplatform.cmake)
-include(ProjectOut.cmake)
-include(ccache.cmake)
+include(QuasarApp.cmake)
 include(Version.cmake)
-include(QuasarAppCITargets.cmake)
-include(QtUtils.cmake)
 
 
 initAll()

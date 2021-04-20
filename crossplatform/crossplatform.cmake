@@ -13,18 +13,37 @@ endif()
 
 # use TARGET_PLATFORM_TOOLCHAIN
 
+# This module include crossplatform toolchains by target platform.
+# To select target platform set the TARGET_PLATFORM_TOOLCHAIN define.
+# Availabel platforms:
+# * wasm32
+# * win32-g++
+# * win64-g++
+#
+# Note
+# For add full support of the wasm32 build you shold use the initWasmSupport method. This method prepare static build for wasm executable and qt resources.
+#
+# initWasmSupport arguments:
+#  * name - This is name of your initialize targets. You can set it as a CMAKE_PROJECT
+#  * deployFile - This is path to the deploy file of the cqtdepoyer tool. Use it for deploy your site.
+
+if (NOT DEFINED TARGET_PLATFORM_TOOLCHAIN)
+    message(STATUS "The crossplatform build is disabled")
+    return()
+
+endif()
 
 set(CROSSPLATFORM_BUILD_TOOLCHAIN_PATH ${CMAKE_CURRENT_LIST_DIR}/${CMAKE_HOST_SYSTEM_NAME}/${TARGET_PLATFORM_TOOLCHAIN}.cmake)
 
 message("CROSSPLATFORM_BUILD_TOOLCHAIN_PATH = ${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH}")
 if(EXISTS ${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH})
 
-    message("${TARGET_PLATFORM_TOOLCHAIN} exits in ${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH}")
+    message(STATUS "${TARGET_PLATFORM_TOOLCHAIN} exits in ${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH}")
     
-    include(${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH})
+    include("${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH}")
     
 else(EXISTS ${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH})
-    message("${TARGET_PLATFORM_TOOLCHAIN} not exits in ${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH}")
+    message(STATUS "${TARGET_PLATFORM_TOOLCHAIN} not exits in ${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH}")
 endif()
 
 function(initWasmSupport name deployFile)
