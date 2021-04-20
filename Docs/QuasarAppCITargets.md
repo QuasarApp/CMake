@@ -1,13 +1,14 @@
-
-# QuasarAppCITargets module description
-
+# QuasarAppCITargets module
+ 
 The library contains 2 methods type it is added methods and init methods.
 All inits method must be invoked before adds methods. If you change order then some add method will be ignored.
 
 This module implementation next cmake functions:
 
 ---
+
  ## Testing
+  
 ---
 **addTestsArg** (name testExec arg) - Name target for test utility of your application.
 - name - Prefix for target (any word).
@@ -21,7 +22,9 @@ This module implementation next cmake functions:
  **initTests** - Init main test target for testing all added tests, this method need to call before all invoiced addTests methods.
 
 ---
- ## Deployment 
+
+ ## Deployment
+
 ---
  **addDeploy** (name targets targetDir) - Add deploy target for deployed your application via CqtDeployer tool.
  - name - This is prefix of added subtarget (any word).
@@ -55,7 +58,9 @@ This module implementation next cmake functions:
  **initDeploy** - Create a main deploy target for all addDeploy subtargets. This method need to call before invoiced of all addDeploy methods.
 
 ---
+
  ## Release
+
 ---
  **initRelease** - Сreate the general release target for all subtargets addRelease. This method need to call before invoice all addRelease methods.
 
@@ -68,8 +73,10 @@ This module implementation next cmake functions:
  - targetDir - Path to target directory.
 
 ---
+
  ## Dcumentation
- ---
+ 
+---
  **initDoc** - Create the general doc target for all subtargets addDoc. This method need to call before invoice all addDoc methods.
 
  **addDoc** (name doxygenFile) - Create subtargets for generate documentation of cpp code.

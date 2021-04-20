@@ -1,5 +1,5 @@
 
-# QuasarApp module description
+# QuasarApp module
 
 This is main cmake module of the QuasarApp group.
 All project of the QuasarApp group ust be use this module in own cmake rro directory.

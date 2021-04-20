@@ -1,5 +1,5 @@
 
-# crossplatform module description
+# Crossplatform module
 
 This module include crossplatform toolchains by target platform. To select target platform set the TARGET_PLATFORM_TOOLCHAIN define.
 
