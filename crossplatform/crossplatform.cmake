@@ -31,7 +31,7 @@ if (NOT DEFINED TARGET_PLATFORM_TOOLCHAIN)
     message( STATUS "The crossplatform build is disabled")
     return()
 
-endif
+endif()
 
 set(CROSSPLATFORM_BUILD_TOOLCHAIN_PATH ${CMAKE_CURRENT_LIST_DIR}/${CMAKE_HOST_SYSTEM_NAME}/${TARGET_PLATFORM_TOOLCHAIN}.cmake)
 
