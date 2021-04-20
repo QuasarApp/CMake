@@ -6,7 +6,7 @@
 #
 
 #
-# This module configure main cmake module of the QuasarApp group.
+# This is main cmake module of the QuasarApp group.
 # All project of the QuasarApp group ust be use this module in own cmake rro directory.
 # Example
 # include(CMake/QuasarApp.cmake)
