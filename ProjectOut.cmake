@@ -5,40 +5,4 @@
 # of this license document, but changing it is not allowed.
 #
 
-#
-# This module configure pathes of the targets.
-# If you include this method befor adding targets then tahen all targets of subproject reconfigured for root project when this vile has been invoked.
-#
-
-if(DEFINED PROJECT_OUT_SUPPORT)
-  return()
-else()
-  set(PROJECT_OUT_SUPPORT 1)
-endif()
-
-IF(NOT CMAKE_BUILD_TYPE)
-  SET(CMAKE_BUILD_TYPE Release)
-ENDIF(NOT CMAKE_BUILD_TYPE)
-
-IF(CMAKE_BUILD_TYPE MATCHES Release)
-    add_definitions(-DRELEASE_BUILD)
-ENDIF()
-
-SET(LIB_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build/${CMAKE_BUILD_TYPE})
-
-message("${} LIB_OUTPUT_DIR = ${LIB_OUTPUT_DIR}")
-
-
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB_OUTPUT_DIR})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIB_OUTPUT_DIR})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${LIB_OUTPUT_DIR})
-
-SET(${PROJECT_NAME}_BIN_DIR ${LIB_OUTPUT_DIR})
-
-
-message(STATUS "buid type    " ${CMAKE_BUILD_TYPE})
-message(STATUS "Project      " ${PROJECT_NAME})
-message(STATUS "c compiler   " ${CMAKE_C_COMPILER})
-message(STATUS "cxx compiler " ${CMAKE_CXX_COMPILER})
-message(STATUS "build shared " ${BUILD_SHARED_LIBS})
-message(STATUS "qmake exec   " ${QT_QMAKE_EXECUTABLE})
+message(FATAL_ERROR "The ProjectOut Module is deprecated please use the QuasarApp.cmake module")
