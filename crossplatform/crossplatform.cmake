@@ -28,7 +28,7 @@ endif()
 #  * deployFile - This is path to the deploy file of the cqtdepoyer tool. Use it for deploy your site.
 
 if (NOT DEFINED TARGET_PLATFORM_TOOLCHAIN)
-    message( STATUS "The crossplatform build is disabled")
+    message(STATUS "The crossplatform build is disabled")
     return()
 
 endif()
@@ -38,9 +38,9 @@ set(CROSSPLATFORM_BUILD_TOOLCHAIN_PATH ${CMAKE_CURRENT_LIST_DIR}/${CMAKE_HOST_SY
 message("CROSSPLATFORM_BUILD_TOOLCHAIN_PATH = ${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH}")
 if(EXISTS ${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH})
 
-    message( STATUS "${TARGET_PLATFORM_TOOLCHAIN} exits in ${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH}")
+    message(STATUS "${TARGET_PLATFORM_TOOLCHAIN} exits in ${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH}")
     
-    include( STATUS ${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH})
+    include("${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH}")
     
 else(EXISTS ${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH})
     message(STATUS "${TARGET_PLATFORM_TOOLCHAIN} not exits in ${CROSSPLATFORM_BUILD_TOOLCHAIN_PATH}")
