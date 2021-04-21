@@ -243,8 +243,8 @@ function(addDeploy name targets targetDir)
 
     find_program(Q_MAKE_EXE qmake)
 
-    if (${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-        set(RUNTIME_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/)
+    if (${CMAKE_BINARY_DIR})
+        set(RUNTIME_DIR ${CMAKE_BINARY_DIR}/)
     endif()
 
     ADD_CUSTOM_TARGET(
@@ -268,8 +268,8 @@ function(addDeployFromFile name)
 
     find_program(Q_MAKE_EXE qmake)
 
-    if (${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-        set(RUNTIME_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/)
+    if (${CMAKE_BINARY_DIR})
+        set(RUNTIME_DIR ${CMAKE_BINARY_DIR}/)
     endif()
 
     ADD_CUSTOM_TARGET(
@@ -293,8 +293,8 @@ function(addDeployFromCustomFile name file)
 
     find_program(Q_MAKE_EXE qmake)
 
-    if (${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-        set(RUNTIME_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/)
+    if (${CMAKE_BINARY_DIR})
+        set(RUNTIME_DIR ${CMAKE_BINARY_DIR}/)
     endif()
 
     ADD_CUSTOM_TARGET(
