@@ -249,8 +249,8 @@ function(addDeploy name targets targetDir)
 
     ADD_CUSTOM_TARGET(
         deploy${name}
-        COMMAND cqtdeployer clear -binPrefix ${RUNTIME_DIR} -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5
-        COMMENT "Deploy: cqtdeployer clear -binPrefix ${RUNTIME_DIR} -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
+        COMMAND cqtdeployer clear -binPrefix \"${RUNTIME_DIR}\" -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5
+        COMMENT "Deploy: cqtdeployer clear -binPrefix \"${RUNTIME_DIR}\" -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 
@@ -274,8 +274,8 @@ function(addDeployFromFile name)
 
     ADD_CUSTOM_TARGET(
         deploy${name}
-        COMMAND cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix ${RUNTIME_DIR} -confFile ${name}
-        COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix ${RUNTIME_DIR} -confFile ${name}"
+        COMMAND cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix \"${RUNTIME_DIR}\" -confFile ${name}
+        COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix \"${RUNTIME_DIR}\" -confFile ${name}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
     add_dependencies(deploy deploy${name})
@@ -299,8 +299,8 @@ function(addDeployFromCustomFile name file)
 
     ADD_CUSTOM_TARGET(
         deploy${name}
-        COMMAND cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix ${RUNTIME_DIR} -confFile ${file}
-        COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix ${RUNTIME_DIR} -confFile ${file}"
+        COMMAND cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix \"${RUNTIME_DIR}\" -confFile ${file}
+        COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix \"${RUNTIME_DIR}\" -confFile ${file}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 
