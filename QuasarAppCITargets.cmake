@@ -133,11 +133,11 @@ function(addTestsArg name testExec arg)
         return()
     endif(TARGET test${name})
 
-    set(EXEC_TEST "${CMAKE_BINARY_DIR}/${testExec}")
+    set(EXEC_TEST "${CMAKE_CURRENT_BINARY_DIR}/${testExec}")
     set(RUN_CMD "${DIR_FOR_TESTING}/${name}/${testExec}.sh")
 
     if (WIN32)
-        set(EXEC_TEST "${CMAKE_BINARY_DIR}/${testExec}.exe")
+        set(EXEC_TEST "${CMAKE_CURRENT_BINARY_DIR}/${testExec}.exe")
         set(RUN_CMD "${DIR_FOR_TESTING}/${name}/${testExec}.exe")
 
     endif (WIN32)
@@ -173,11 +173,11 @@ function(addTests name testExec)
 
     endif(TARGET test${name})
 
-    set(EXEC_TEST "${CMAKE_BINARY_DIR}/${testExec}")
+    set(EXEC_TEST "${CMAKE_CURRENT_BINARY_DIR}/${testExec}")
     set(RUN_CMD "${DIR_FOR_TESTING}/${name}/${testExec}.sh")
 
     if (WIN32)
-        set(EXEC_TEST "${CMAKE_BINARY_DIR}/${testExec}.exe")
+        set(EXEC_TEST "${CMAKE_CURRENT_BINARY_DIR}/${testExec}.exe")
         set(RUN_CMD "${DIR_FOR_TESTING}/${name}/${testExec}.exe")
 
     endif (WIN32)
