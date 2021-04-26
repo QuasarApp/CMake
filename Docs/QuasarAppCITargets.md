@@ -7,7 +7,7 @@ This module implementation next cmake functions:
 
 ---
 
- ## Testing
+## Testing
   
 ---
 **addTestsArg** (name testExec arg) - Name target for test utility of your application.
@@ -23,7 +23,7 @@ This module implementation next cmake functions:
 
 ---
 
- ## Deployment
+## Deployment
 
 ---
  **addDeploy** (name targets targetDir) - Add deploy target for deployed your application via CqtDeployer tool.
@@ -49,17 +49,21 @@ This module implementation next cmake functions:
 
  **addDeployAPK** (name input aliase keystore keystorePass targetDir) - Add subtargets of deploy setep for create signed android apk file.
  - name - This is prefix of added subtarget (any word).
- - input - Path to input android json file: *-deployment-settings.json.
+ - android_src -  Path to folder with the android_manifest file.
  - aliase - Alise for key store.
  - keystore - Path of key store.
  - keystorePass - Pass of keystore file.
  - targetDir - Target directory for output apk file.
 
+**add_qt_android_apk** (my_app_apk my_app) - This target add targets for the build apk file.
+For get more information about this function see oficial [documentation](https://github.com/LaurentGomila/qt-android-cmake#options-of-the-add_qt_android_apk-macro
+) of the **qt-android-cmake** toolchain.
+
  **initDeploy** - Create a main deploy target for all addDeploy subtargets. This method need to call before invoiced of all addDeploy methods.
 
 ---
 
- ## Release
+## Release
 
 ---
  **initRelease** - Сreate the general release target for all subtargets addRelease. This method need to call before invoice all addRelease methods.
@@ -74,7 +78,7 @@ This module implementation next cmake functions:
 
 ---
 
- ## Dcumentation
+## Dcumentation
  
 ---
  **initDoc** - Create the general doc target for all subtargets addDoc. This method need to call before invoice all addDoc methods.

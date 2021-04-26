@@ -50,7 +50,7 @@
 #
 # addDeployAPK(name input aliase keystore keystorePass targetDir) // Add subtargets of deploy setep for create signed android apk file.
 # - name - This is prefix of added subtarget (any word).
-# - input - Path to input android json file : *-deployment-settings.json
+# - android_src - Path to folder with the android_manifest file.
 # - aliase - Aliase for key store.
 # - keystore - Path of key store.
 # - keystorePass - Pass of keystore file.
@@ -91,6 +91,10 @@ set(TEST_TARGETS_LIST "")
 set(DEPLOY_TARGETS_LIST "")
 set(RELEASE_TARGETS_LIST "")
 set(DIR_FOR_TESTING ${PROJECT_SOURCE_DIR}/Testing)
+
+if (ANDROID)
+    include(${CMAKE_CURRENT_LIST_DIR}/qt-android-cmake/AddQtAndroidApk.cmake)
+endif()
 
 function(emptyTarget targetName)
 
@@ -373,7 +377,7 @@ function(addDeployQIF name sourceDir targetDir config)
 
 endfunction()
 
-function(addDeployAPK name input aliase keystore keystorePass targetDir)
+function(addDeployAPK name android_src aliase keystore keystorePass targetDir)
 
     if(TARGET deployAPK${name})
         message("the deployAPK${name} target already created!")
@@ -386,19 +390,11 @@ function(addDeployAPK name input aliase keystore keystorePass targetDir)
         return()
     endif()
 
-
-    set(OUTPUT_ANDROID --output "${CMAKE_BINARY_DIR}/AndroidBuild")
-    set(INPUT_ANDROID --input "${input}")
-    set(JDK --jdk /usr)
-    set(SIGN --sign "${keystore}" --storepass ${keystorePass} --keypass ${keystorePass} --release)
-
-    find_program(A_DEPLOYER androiddeployqt)
-
-    ADD_CUSTOM_TARGET(
-        createAPK${name}
-        COMMAND ${A_DEPLOYER} ${INPUT_ANDROID} ${OUTPUT_ANDROID} ${JDK} --gradle ${SIGN}
-        COMMENT "Run deploy android apk : ${A_DEPLOYER} ${INPUT_ANDROID} ${OUTPUT_ANDROID} ${JDK} --gradle ${SIGN}"
-    )
+    add_qt_android_apk(createAPK${name} ${name}
+        PACKAGE_SOURCES ${android_src}
+        KEYSTORE ${keystore} ${aliase}
+        KEYSTORE_PASSWORD ${keystorePass}
+        )
 
     ADD_CUSTOM_TARGET(
         deployAPK${name}

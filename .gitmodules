@@ -4,3 +4,6 @@
 [submodule "DoxyStyle"]
 	path = DoxyStyle
 	url = https://github.com/QuasarApp/DoxyStyle.git
+[submodule "qt-android-cmake"]
+	path = qt-android-cmake
+	url = https://github.com/QuasarApp/qt-android-cmake
