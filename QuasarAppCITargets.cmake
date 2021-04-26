@@ -390,10 +390,10 @@ function(addDeployAPK name android_src aliase keystore keystorePass targetDir)
         return()
     endif()
 
-    IF(DEFINED ENV{ANDROID_PLATFORM_LEVEL})
-        set(ANDROID_PLATFORM_LEVEL ENV{ANDROID_PLATFORM_LEVEL})
+    IF(DEFINED ENV{ANDROID_API_VERSION})
+        set(ANDROID_PLATFORM_LEVEL $ENV{ANDROID_API_VERSION})
     else()
-        set(ANDROID_PLATFORM_LEVEL 21)
+        set(ANDROID_PLATFORM_LEVEL 28)
     endif()
     message("The ANDROID_PLATFORM_LEVEL = ${ANDROID_PLATFORM_LEVEL}")
 
