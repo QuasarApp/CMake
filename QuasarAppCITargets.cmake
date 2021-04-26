@@ -390,6 +390,14 @@ function(addDeployAPK name android_src aliase keystore keystorePass targetDir)
         return()
     endif()
 
+    IF(DEFINED ENV{ANDROID_PLATFORM_LEVEL})
+        set(ANDROID_PLATFORM_LEVEL ENV{ANDROID_PLATFORM_LEVEL})
+    else()
+        set(ANDROID_PLATFORM_LEVEL 21)
+    endif()
+    message("The ANDROID_PLATFORM_LEVEL = ${ANDROID_PLATFORM_LEVEL}")
+
+
     add_qt_android_apk(createAPK${name} ${name}
         PACKAGE_SOURCES ${android_src}
         KEYSTORE ${keystore} ${aliase}
