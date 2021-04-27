@@ -47,13 +47,14 @@ This module implementation next cmake functions:
  - sourceDir - Path to folder with qif template.
  - config - Path to config file of qif template.
 
- **addDeployAPK** (name input aliase keystore keystorePass targetDir) - Add subtargets of deploy setep for create signed android apk file.
+ **addDeployAPK** (name input aliase keystore keystorePass targetDir extraLibs) - Add subtargets of deploy setep for create signed android apk file.
  - name - This is prefix of added subtarget (any word).
  - android_src -  Path to folder with the android_manifest file.
  - aliase - Alise for key store.
  - keystore - Path of key store.
  - keystorePass - Pass of keystore file.
  - targetDir - Target directory for output apk file.
+ - extraLibs - list f the extra libraryes (like the openssl) 
 
 **add_qt_android_apk** (my_app_apk my_app) - This target add targets for the build apk file.
 For get more information about this function see oficial [documentation](https://github.com/LaurentGomila/qt-android-cmake#options-of-the-add_qt_android_apk-macro

@@ -55,6 +55,7 @@
 # - keystore - Path of key store.
 # - keystorePass - Pass of keystore file.
 # - targetDir - Target dir for output apk file.
+# - extraLibs - list f the extra libraryes (like the openssl)
 #
 # initDeploy() // Create a main deploy target for all addDeploy subtargets. This method need to call before invoiced of all addDeploy methods.
 #
@@ -377,7 +378,7 @@ function(addDeployQIF name sourceDir targetDir config)
 
 endfunction()
 
-function(addDeployAPK name android_src aliase keystore keystorePass targetDir)
+function(addDeployAPK name android_src aliase keystore keystorePass targetDir extraLibs)
 
     if(TARGET deployAPK${name})
         message("the deployAPK${name} target already created!")
@@ -402,6 +403,7 @@ function(addDeployAPK name android_src aliase keystore keystorePass targetDir)
         PACKAGE_SOURCES ${android_src}
         KEYSTORE ${keystore} ${aliase}
         KEYSTORE_PASSWORD ${keystorePass}
+        DEPENDS ${extraLibs}
         )
 
     ADD_CUSTOM_TARGET(
