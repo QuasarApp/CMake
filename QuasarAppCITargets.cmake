@@ -408,7 +408,7 @@ function(addDeployAPK name android_src aliase keystore keystorePass targetDir)
         deployAPK${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.apk ${targetDir}
         COMMENT "copt apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/AndroidBuild/build/outputs/apk/
+        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/apk/release
         DEPENDS createAPK${name}
 
     )
