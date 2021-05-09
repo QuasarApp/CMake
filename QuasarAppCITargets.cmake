@@ -153,7 +153,7 @@ function(addTestsArg name testExec arg)
 
     ADD_CUSTOM_TARGET(
         deployTest${name}
-        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5
+        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\" -recursiveDepth 5
         COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         )
@@ -191,7 +191,7 @@ function(addTests name testExec)
 
     ADD_CUSTOM_TARGET(
         deployTest${name}
-        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5
+        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\" -recursiveDepth 5
         COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
     )
 
@@ -242,7 +242,7 @@ function(addDeploy name targets targetDir)
 
     ADD_CUSTOM_TARGET(
         deploy${name}
-        COMMAND cqtdeployer clear -binPrefix \"${CMAKE_BINARY_DIR}\" -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5
+        COMMAND cqtdeployer clear -binPrefix \"${CMAKE_BINARY_DIR}\" -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\" -recursiveDepth 5
         COMMENT "Deploy: cqtdeployer clear -binPrefix \"${CMAKE_BINARY_DIR}\" -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
