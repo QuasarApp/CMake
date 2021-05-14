@@ -41,6 +41,10 @@
 # addDeploySnap(name targetDir) // Add to deploy step substeps for create a snap package.
 # - name - This is prefix of added subtarget (any word).
 # - targetDir - Destanation direcroty for snap files.
+#  The addDeploySnap method are support the SNAPCRAFT_MODE variable. If you need to use custom snapcraft mode.
+#    Example:
+#       set(SNAPCRAFT_MODE "--destructive-mode")
+#       addDeploySnap("Client" ${TARGET_DIR})
 #
 # addDeployQIF(name sourceDir targetDir config) // Add to deploy step substeps for create Qt Install FrameWork Installer.
 # - name - This is prefix of added subtarget (any word).
@@ -310,16 +314,16 @@ function(addDeploySnap name targetDir)
 
     ADD_CUSTOM_TARGET(
         snapClear${name}
-        COMMAND snapcraft clean
-        COMMENT "clear snap: snapcraft clear"
+        COMMAND snapcraft clean ${SNAPCRAFT_MODE}
+        COMMENT "clear snap: snapcraft clean ${SNAPCRAFT_MODE}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 
     )
 
     ADD_CUSTOM_TARGET(
         snapcraft${name}
-        COMMAND snapcraft
-        COMMENT "create snap: snapcraft"
+        COMMAND snapcraft ${SNAPCRAFT_MODE}
+        COMMENT "create snap: snapcraft ${SNAPCRAFT_MODE}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         DEPENDS deploy${name} snapClear${name}
     )

@@ -41,7 +41,16 @@ This module implementation next cmake functions:
  **addDeploySnap** (name targetDir) - Add to deploy step substeps for create a snap package.
  - name - This is prefix of added subtarget (any word).
  - targetDir - Destanation directroy for snap files.
-
+ 
+   **The addDeploySnap method are support the SNAPCRAFT_MODE variable.** If you need to use custom snapcraft mode.
+   
+   ## Example:
+     
+   ```cmake
+      set(SNAPCRAFT_MODE "--destructive-mode")
+      addDeploySnap("Client" ${TARGET_DIR})
+   ```
+     
  **addDeployQIF** (name sourceDir targetDir config) - add to deploy step substeps for create Qt Install FrameWork Installer.
  - name - This is prefix of added subtarget (any word) location for created installer.
  - sourceDir - Path to folder with qif template.
