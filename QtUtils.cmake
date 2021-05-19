@@ -36,7 +36,7 @@ function(prepareQM name sourceDir ts_files)
     foreach(_ts_file ${ts_files})
 
         execute_process(
-            COMMAND ${LUPDATE_EXECUTABLE} -recursive ${sourceDir} -ts ${_ts_file})
+            COMMAND ${LUPDATE_EXECUTABLE} -locations none -recursive ${sourceDir} -ts ${_ts_file})
         execute_process(
             COMMAND ${LRELEASE_EXECUTABLE} ${_ts_file})
 
