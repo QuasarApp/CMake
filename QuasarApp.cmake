@@ -35,9 +35,6 @@ IF(NOT CMAKE_BUILD_TYPE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
 ## Default Defines
-IF(CMAKE_BUILD_TYPE MATCHES Release)
-    add_definitions(-DRELEASE_BUILD)
-ENDIF()
 ## End DEfault defines
 
 include(${CMAKE_CURRENT_LIST_DIR}/ccache.cmake)
