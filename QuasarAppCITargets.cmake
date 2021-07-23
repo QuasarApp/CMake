@@ -413,13 +413,23 @@ function(addDeployAPK name android_src aliase keystore keystorePass targetDir ex
     ADD_CUSTOM_TARGET(
         deployAPK${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.apk ${targetDir}
-        COMMENT "copt apk: ${CMAKE_COMMAND} -E copy *.aab ${targetDir}"
-        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/aab/release
+        COMMENT "copt apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
+        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/apk/release
         DEPENDS createAPK${name}
 
     )
 
+    ADD_CUSTOM_TARGET(
+        deployAAB${name}
+        COMMAND ${CMAKE_COMMAND} -E copy *.aab ${targetDir}
+        COMMENT "copt aab: ${CMAKE_COMMAND} -E copy *.aab ${targetDir}"
+        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/bundle/release
+        DEPENDS deployAPK${name}
+
+    )
+
     add_dependencies(deploy deployAPK${name})
+    add_dependencies(deploy deployAAB${name})
 
 endfunction()
 
