@@ -11,6 +11,11 @@
 # *********************
 # The prepareQM function - This function prepare translations for you prijects
 
+#**********************
+# Availabel VARIABLE:
+# *********************
+# The GIT_COMMIT_COUNT variable - This variable contains commits count
+# The GIT_COMMIT_HASH variable - This variable contains short version of the buildet commit hash.
 
 if(DEFINED PROJECT_QT_UTILS_SUPPORT)
   return()
@@ -45,3 +50,16 @@ function(prepareQM name sourceDir ts_files)
 
 endfunction()
 
+execute_process(
+    COMMAND git rev-list --all --count
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    OUTPUT_VARIABLE GIT_COMMIT_COUNT
+    )
+string(STRIP "${GIT_COMMIT_COUNT}" GIT_COMMIT_COUNT)
+
+execute_process(
+    COMMAND git rev-parse --short HEAD
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    OUTPUT_VARIABLE GIT_COMMIT_HASH
+    )
+string(STRIP "${GIT_COMMIT_HASH}" GIT_COMMIT_HASH)

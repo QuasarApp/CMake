@@ -13,3 +13,8 @@ The module provides qt utils functions. This module contains some useful functio
  - sourceDir - This is root source directory. Update will be scan this dir for prepare translations.
  - ts_files - This is list of the supported languages.
 
+
+## CMake Variables
+
+- The **GIT_COMMIT_COUNT** - This variable contains commits count
+- The **GIT_COMMIT_HASH** - This variable contains short version of the buildet commit hash.
