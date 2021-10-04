@@ -10,12 +10,15 @@
 # Availabel functions:
 # *********************
 # The prepareQM function - This function prepare translations for you prijects
-
+# The updateGitVars macross - This macross update all GIT variables releative current cmake file.
 #**********************
 # Availabel VARIABLE:
 # *********************
 # The GIT_COMMIT_COUNT variable - This variable contains commits count
 # The GIT_COMMIT_HASH variable - This variable contains short version of the buildet commit hash.
+# Note:
+# For update actualy value of git variables use the updateGitVars macros
+
 
 if(DEFINED PROJECT_QT_UTILS_SUPPORT)
   return()
@@ -50,16 +53,21 @@ function(prepareQM name sourceDir ts_files)
 
 endfunction()
 
-execute_process(
-    COMMAND git rev-list --all --count
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    OUTPUT_VARIABLE GIT_COMMIT_COUNT
-    )
-string(STRIP "${GIT_COMMIT_COUNT}" GIT_COMMIT_COUNT)
+macro(updateGitVars)
 
-execute_process(
-    COMMAND git rev-parse --short HEAD
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    OUTPUT_VARIABLE GIT_COMMIT_HASH
-    )
-string(STRIP "${GIT_COMMIT_HASH}" GIT_COMMIT_HASH)
+    execute_process(
+        COMMAND git rev-list --all --count
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_COMMIT_COUNT
+        )
+    string(STRIP "${GIT_COMMIT_COUNT}" GIT_COMMIT_COUNT)
+
+    execute_process(
+        COMMAND git rev-parse --short HEAD
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_COMMIT_HASH
+        )
+    string(STRIP "${GIT_COMMIT_HASH}" GIT_COMMIT_HASH)
+
+endmacro()
+
