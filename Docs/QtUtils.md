@@ -22,6 +22,6 @@ Use This macros before read **GIT_COMMIT_HASH** and **GIT_COMMIT_COUNT** variabl
 - The **GIT_COMMIT_COUNT** - This variable contains commits count
 - The **GIT_COMMIT_HASH** - This variable contains short version of the buildet commit hash.
 
-### Bote 
+### Note 
 
-Fsor update actualy value of git variables use the updateGitVars macros
+For update actualy value of git variables use the updateGitVars macros.
