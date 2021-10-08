@@ -427,7 +427,7 @@ function(addDeployAPK name android_src targetDir extraLibs)
         deployAAB${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.aab ${targetDir}
         COMMENT "copt aab: ${CMAKE_COMMAND} -E copy *.aab ${targetDir}"
-        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/bundle/debug
+        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/bundle/release
         DEPENDS deployAPK${name}
 
     )
