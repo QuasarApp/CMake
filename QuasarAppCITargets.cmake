@@ -52,12 +52,18 @@
 # - sourceDir - Path to folder with qif template.
 # - config - Path to config file of qif template.
 #
-# addDeployAPK(name input aliase keystore keystorePass targetDir) // Add subtargets of deploy setep for create signed android apk file.
+# addSignedDeployAPK(name input aliase keystore keystorePass targetDir) // Add subtargets of deploy setep for create signed android apk file.
 # - name - This is prefix of added subtarget (any word).
 # - android_src - Path to folder with the android_manifest file.
 # - aliase - Aliase for key store.
 # - keystore - Path of key store.
 # - keystorePass - Pass of keystore file.
+# - targetDir - Target dir for output apk file.
+# - extraLibs - list f the extra libraryes (like the openssl)
+#
+# addDeployAPK(name input aliase keystore keystorePass targetDir) // Add subtargets of deploy setep for create android apk file.
+# - name - This is prefix of added subtarget (any word).
+# - android_src - Path to folder with the android_manifest file.
 # - targetDir - Target dir for output apk file.
 # - extraLibs - list f the extra libraryes (like the openssl)
 #
@@ -382,7 +388,7 @@ function(addDeployQIF name sourceDir targetDir config)
 
 endfunction()
 
-function(addDeployAPK name android_src aliase keystore keystorePass targetDir extraLibs)
+function(addDeployAPK name android_src targetDir extraLibs)
 
     if(TARGET deployAPK${name})
         message("the deployAPK${name} target already created!")
@@ -405,8 +411,57 @@ function(addDeployAPK name android_src aliase keystore keystorePass targetDir ex
 
     add_qt_android_apk(createAPK${name} ${name}
         PACKAGE_SOURCES ${android_src}
-        KEYSTORE ${keystore} ${aliase}
-        KEYSTORE_PASSWORD ${keystorePass}
+        DEPENDS ${extraLibs}
+        )
+
+    ADD_CUSTOM_TARGET(
+        deployAPK${name}
+        COMMAND ${CMAKE_COMMAND} -E copy *.apk ${targetDir}
+        COMMENT "copt apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
+        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/apk/release
+        DEPENDS createAPK${name}
+
+    )
+
+    ADD_CUSTOM_TARGET(
+        deployAAB${name}
+        COMMAND ${CMAKE_COMMAND} -E copy *.aab ${targetDir}
+        COMMENT "copt aab: ${CMAKE_COMMAND} -E copy *.aab ${targetDir}"
+        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/bundle/release
+        DEPENDS deployAPK${name}
+
+    )
+
+    add_dependencies(deploy deployAPK${name})
+    add_dependencies(deploy deployAAB${name})
+
+endfunction()
+
+function(addSignedDeployAPK name android_src aliase keystore keystorePass targetDir extraLibs)
+
+    if(TARGET deployAPK${name})
+        message("the deployAPK${name} target already created!")
+        return()
+
+    endif(TARGET deployAPK${name})
+
+    IF(NOT DEFINED ENV{ANDROID_SDK_ROOT})
+        message("the ANDROID_SDK_ROOT is not defined. define ANDROID_SDK_ROOT variable and run cmake again!")
+        return()
+    endif()
+
+    IF(DEFINED ENV{ANDROID_API_VERSION})
+        set(ANDROID_PLATFORM_LEVEL $ENV{ANDROID_API_VERSION})
+    else()
+        set(ANDROID_PLATFORM_LEVEL 30)
+    endif()
+    message("The ANDROID_PLATFORM_LEVEL = ${ANDROID_PLATFORM_LEVEL}")
+
+
+    add_qt_android_apk(createAPK${name} ${name}
+        PACKAGE_SOURCES ${android_src}
+#        KEYSTORE ${keystore} ${aliase}
+#        KEYSTORE_PASSWORD ${keystorePass}
         DEPENDS ${extraLibs}
         )
 
