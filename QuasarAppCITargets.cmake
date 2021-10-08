@@ -52,7 +52,7 @@
 # - sourceDir - Path to folder with qif template.
 # - config - Path to config file of qif template.
 #
-# addSignedDeployAPK(name input aliase keystore keystorePass targetDir) // Add subtargets of deploy setep for create signed android apk file.
+# addDeploySignedAPK(name input aliase keystore keystorePass targetDir) // Add subtargets of deploy setep for create signed android apk file.
 # - name - This is prefix of added subtarget (any word).
 # - android_src - Path to folder with the android_manifest file.
 # - aliase - Aliase for key store.
@@ -418,7 +418,7 @@ function(addDeployAPK name android_src targetDir extraLibs)
         deployAPK${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.apk ${targetDir}
         COMMENT "copt apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
-        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/apk/release
+        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/apk/debug
         DEPENDS createAPK${name}
 
     )
@@ -427,7 +427,7 @@ function(addDeployAPK name android_src targetDir extraLibs)
         deployAAB${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.aab ${targetDir}
         COMMENT "copt aab: ${CMAKE_COMMAND} -E copy *.aab ${targetDir}"
-        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/bundle/release
+        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/bundle/debug
         DEPENDS deployAPK${name}
 
     )
@@ -437,7 +437,7 @@ function(addDeployAPK name android_src targetDir extraLibs)
 
 endfunction()
 
-function(addSignedDeployAPK name android_src aliase keystore keystorePass targetDir extraLibs)
+function(addDeploySignedAPK name android_src aliase keystore keystorePass targetDir extraLibs)
 
     if(TARGET deployAPK${name})
         message("the deployAPK${name} target already created!")
