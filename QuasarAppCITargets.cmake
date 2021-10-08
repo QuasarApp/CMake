@@ -460,8 +460,8 @@ function(addSignedDeployAPK name android_src aliase keystore keystorePass target
 
     add_qt_android_apk(createAPK${name} ${name}
         PACKAGE_SOURCES ${android_src}
-#        KEYSTORE ${keystore} ${aliase}
-#        KEYSTORE_PASSWORD ${keystorePass}
+        KEYSTORE ${keystore} ${aliase}
+        KEYSTORE_PASSWORD ${keystorePass}
         DEPENDS ${extraLibs}
         )
 
