@@ -479,7 +479,7 @@ function(addDeploySignedAPK name android_src aliase keystore keystorePass target
         COMMAND ${CMAKE_COMMAND} -E copy *.aab ${targetDir}
         COMMENT "copt aab: ${CMAKE_COMMAND} -E copy *.aab ${targetDir}"
         WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/bundle/release
-        DEPENDS deployAPKDebug${name}
+        DEPENDS deployAPK${name}
 
     )
 
