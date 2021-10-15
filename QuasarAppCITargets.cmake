@@ -475,11 +475,19 @@ function(addDeploySignedAPK name android_src aliase keystore keystorePass target
     )
 
     ADD_CUSTOM_TARGET(
+        deployAPKDebug${name}
+        COMMAND ${CMAKE_COMMAND} -E copy *.apk ${targetDir}
+        COMMENT "copt apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
+        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/apk/debug
+        DEPENDS deployAPK${name}
+    )
+
+    ADD_CUSTOM_TARGET(
         deployAAB${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.aab ${targetDir}
         COMMENT "copt aab: ${CMAKE_COMMAND} -E copy *.aab ${targetDir}"
         WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/bundle/release
-        DEPENDS deployAPK${name}
+        DEPENDS deployAPKDebug${name}
 
     )
 
