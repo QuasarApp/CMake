@@ -73,6 +73,10 @@
 # *** Release ***
 # initRelease() // Create the general release target for all subtargets addRelease. This method need to call before invoice all addRelease methods.
 #
+# addReleaseCustom(name pyFile) // This function prepare to run pyFile and add dependencies for release target.
+# - name - This is prefix of added subtarget (any word).
+# - pyFile This is python script for release project.
+#
 # addReleaseSnap(name) // Create subtargets for publish snap deployed snap package.
 # - name - This is prefix of added subtarget (any word).
 #
@@ -501,6 +505,26 @@ function(initRelease)
         release
         COMMENT "=================== Relese project ==================="
     )
+
+endfunction()
+
+function(addReleaseCustom name pyFile)
+
+    if(TARGET pyRelease${name})
+        message("the pyRelease${name} target already created!")
+        return()
+
+    endif(TARGET pyRelease${name})
+
+    ADD_CUSTOM_TARGET(
+        pyRelease${name}
+        COMMAND python pyFile
+        COMMENT "pyRelease${name} release: run python ${pyFile}"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+
+    )
+
+    add_dependencies(release pyRelease${name})
 
 endfunction()
 
