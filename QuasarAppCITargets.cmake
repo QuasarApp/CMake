@@ -298,6 +298,7 @@ function(addDeployFromCustomFile name file)
 
     ADD_CUSTOM_TARGET(
         deploy${name}
+        SOURCES ${file}
         COMMAND cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\"
         COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file} -libDir ${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -518,6 +519,7 @@ function(addReleaseCustom name pyFile)
 
     ADD_CUSTOM_TARGET(
         pyRelease${name}
+        SOURCES ${pyFile}
         COMMAND python pyFile
         COMMENT "pyRelease${name} release: run python ${pyFile}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -608,6 +610,7 @@ function(addDoc name doxygenFile)
 
     ADD_CUSTOM_TARGET(
         doxygen${name}
+        SOURCES ${doxygenFile}
         COMMAND ${DOXYGEN_EXECUTABLE} ${doxygenFile}
         COMMENT "${DOXYGEN_EXECUTABLE} ${doxygenFile}"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
