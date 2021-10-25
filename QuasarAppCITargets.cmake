@@ -296,9 +296,13 @@ function(addDeployFromCustomFile name file)
 
     find_program(Q_MAKE_EXE qmake)
 
+    file(GLOB ${name}files
+            "${file}*"
+        )
+
     ADD_CUSTOM_TARGET(
         deploy${name}
-        SOURCES ${file}
+        SOURCES ${${name}files}
         COMMAND cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\"
         COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file} -libDir ${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -517,9 +521,13 @@ function(addReleaseCustom name pyFile)
 
     endif(TARGET pyRelease${name})
 
+    file(GLOB ${name}files
+            "${pyFile}*"
+        )
+
     ADD_CUSTOM_TARGET(
         pyRelease${name}
-        SOURCES ${pyFile}
+        SOURCES ${${name}files}
         COMMAND python pyFile
         COMMENT "pyRelease${name} release: run python ${pyFile}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -608,9 +616,14 @@ function(addDoc name doxygenFile)
         return()
     endif(NOT EXISTS ${DOXYGEN_EXECUTABLE})
 
+
+    file(GLOB ${name}files
+            "${doxygenFile}*"
+        )
+
     ADD_CUSTOM_TARGET(
         doxygen${name}
-        SOURCES ${doxygenFile}
+        SOURCES ${${name}files}
         COMMAND ${DOXYGEN_EXECUTABLE} ${doxygenFile}
         COMMENT "${DOXYGEN_EXECUTABLE} ${doxygenFile}"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
