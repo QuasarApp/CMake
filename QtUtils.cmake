@@ -56,7 +56,7 @@ endfunction()
 macro(updateGitVars)
 
     execute_process(
-        COMMAND git rev-list --all --count
+        COMMAND git rev-list --count HEAD
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         OUTPUT_VARIABLE GIT_COMMIT_COUNT
         )
