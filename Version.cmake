@@ -31,6 +31,10 @@ endif()
 #
 function(setVersion maj min rev)
 
+    if (APPLE)
+        return()
+    endif()
+
     SET_TARGET_PROPERTIES(
       ${PROJECT_NAME}
       PROPERTIES
