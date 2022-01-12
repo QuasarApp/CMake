@@ -67,10 +67,9 @@
 # - targetDir - Target dir for output apk file.
 # - extraLibs - list f the extra libraryes (like the openssl)
 #
-# addDeployIPA(name plist team_id targetDir)
+# addDeployIPA(name plist targetDir)
 # - name - This is prefix of added subtarget (any word).
 # - plist - This is path to Info.plist file
-# - team_id - this is id of developer team
 # - targetDir - Target dir for output apk file.
 #
 # initDeploy() // Create a main deploy target for all addDeploy subtargets. This method need to call before invoiced of all addDeploy methods.
@@ -407,7 +406,7 @@ function(addDeployQIF name sourceDir targetDir config)
 
 endfunction()
 
-function(addDeployIPA name plist team_id targetDir)
+function(addDeployIPA name plist targetDir)
 
     if(TARGET deployIPA${name})
         message("the deployIPA${name} target already created!")
@@ -417,13 +416,10 @@ function(addDeployIPA name plist team_id targetDir)
 
     add_qt_ios_app(createIPA${name} ${name}
       NAME ${name}
-      BUNDLE_IDENTIFIER ${bundle_id}
       LONG_VERSION ${QATERIALGALLERY_VERSION}.${QATERIALGALLERY_VERSION_TAG}
       COPYRIGHT "QuasarApp 2022-2022"
       ASSET_DIR "${CMAKE_CURRENT_SOURCE_DIR}/apple/Assets.xcassets"
       CUSTOM_PLIST "${plist}"
-      CODE_SIGN_IDENTITY "iPhone Developer"
-      TEAM_ID "${team_id}"
       ORIENTATION_PORTRAIT
       ORIENTATION_PORTRAIT_UPDOWN
       ORIENTATION_LANDSCAPE_LEFT
