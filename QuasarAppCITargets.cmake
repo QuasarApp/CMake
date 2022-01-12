@@ -438,6 +438,7 @@ function(addDeployIPA name plist targetDir)
 
     )
 
+    add_dependencies(deploy deployIPA${name})
 
 endfunction()
 
