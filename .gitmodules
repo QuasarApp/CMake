@@ -10,3 +10,6 @@
 [submodule "ios-cmake"]
 	path = ios-cmake
 	url = https://github.com/QuasarApp/ios-cmake.git
+[submodule "QtIosCMake"]
+	path = QtIosCMake
+	url = https://github.com/QuasarApp/QtIosCMake.git

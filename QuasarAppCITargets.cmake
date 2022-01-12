@@ -67,6 +67,12 @@
 # - targetDir - Target dir for output apk file.
 # - extraLibs - list f the extra libraryes (like the openssl)
 #
+# addDeployIPA(name plist team_id targetDir)
+# - name - This is prefix of added subtarget (any word).
+# - plist - This is path to Info.plist file
+# - team_id - this is id of developer team
+# - targetDir - Target dir for output apk file.
+#
 # initDeploy() // Create a main deploy target for all addDeploy subtargets. This method need to call before invoiced of all addDeploy methods.
 #
 #
@@ -109,6 +115,10 @@ set(DIR_FOR_TESTING ${PROJECT_SOURCE_DIR}/Testing)
 
 if (ANDROID)
     include(${CMAKE_CURRENT_LIST_DIR}/qt-android-cmake/AddQtAndroidApk.cmake)
+endif()
+
+if (IOS)
+    include(${CMAKE_CURRENT_LIST_DIR}/QtIosCMake/AddQtIosApp.cmake)
 endif()
 
 function(emptyTarget targetName)
@@ -397,6 +407,44 @@ function(addDeployQIF name sourceDir targetDir config)
 
 endfunction()
 
+function(addDeployIPA name plist team_id targetDir)
+
+    if(TARGET deployIPA${name})
+        message("the deployIPA${name} target already created!")
+        return()
+
+    endif(TARGET deployIPA${name})
+
+    add_qt_ios_app(createIPA${name} ${name}
+      NAME ${name}
+      BUNDLE_IDENTIFIER ${bundle_id}
+      LONG_VERSION ${QATERIALGALLERY_VERSION}.${QATERIALGALLERY_VERSION_TAG}
+      COPYRIGHT "QuasarApp 2022-2022"
+      ASSET_DIR "${CMAKE_CURRENT_SOURCE_DIR}/apple/Assets.xcassets"
+      CUSTOM_PLIST "${plist}"
+      CODE_SIGN_IDENTITY "iPhone Developer"
+      TEAM_ID "${team_id}"
+      ORIENTATION_PORTRAIT
+      ORIENTATION_PORTRAIT_UPDOWN
+      ORIENTATION_LANDSCAPE_LEFT
+      ORIENTATION_LANDSCAPE_RIGHT
+      IPA
+      UPLOAD_SYMBOL
+      VERBOSE
+    )
+
+    ADD_CUSTOM_TARGET(
+        deployIPA${name}
+        COMMAND ${CMAKE_COMMAND} -E copy *.ipa ${targetDir}
+        COMMENT "copy ipa: ${CMAKE_COMMAND} -E copy *.ipa ${targetDir}"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/
+        DEPENDS createIPA${name}
+
+    )
+
+
+endfunction()
+
 function(addDeployAPK name android_src targetDir extraLibs)
 
     if(TARGET deployAPK${name})
@@ -426,7 +474,7 @@ function(addDeployAPK name android_src targetDir extraLibs)
     ADD_CUSTOM_TARGET(
         deployAPK${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.apk ${targetDir}
-        COMMENT "copt apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
+        COMMENT "copy apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
         WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/apk/debug
         DEPENDS createAPK${name}
 
@@ -435,7 +483,7 @@ function(addDeployAPK name android_src targetDir extraLibs)
     ADD_CUSTOM_TARGET(
         deployAAB${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.aab ${targetDir}
-        COMMENT "copt aab: ${CMAKE_COMMAND} -E copy *.aab ${targetDir}"
+        COMMENT "copy aab: ${CMAKE_COMMAND} -E copy *.aab ${targetDir}"
         WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/bundle/release
         DEPENDS deployAPK${name}
 
@@ -477,7 +525,7 @@ function(addDeploySignedAPK name android_src aliase keystore keystorePass target
     ADD_CUSTOM_TARGET(
         deployAPK${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.apk ${targetDir}
-        COMMENT "copt apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
+        COMMENT "copy apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
         WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/apk/release
         DEPENDS createAPK${name}
 
@@ -486,7 +534,7 @@ function(addDeploySignedAPK name android_src aliase keystore keystorePass target
     ADD_CUSTOM_TARGET(
         deployAAB${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.aab ${targetDir}
-        COMMENT "copt aab: ${CMAKE_COMMAND} -E copy *.aab ${targetDir}"
+        COMMENT "copy aab: ${CMAKE_COMMAND} -E copy *.aab ${targetDir}"
         WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/bundle/release
         DEPENDS deployAPK${name}
 
