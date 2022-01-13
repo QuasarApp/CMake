@@ -427,6 +427,9 @@ function(addDeployIPA name bundle_id targetDir version appleDir)
       NAME ${name}
       BUNDLE_IDENTIFIER ${bundle_id}
       LONG_VERSION ${version}
+      SHORT_VERSION ${version}
+      VERSION ${version}
+
       COPYRIGHT "QuasarApp 2022-2022"
       ASSET_DIR "${appleDir}/Assets.xcassets"
       TEAM_ID ${CMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM}
