@@ -436,7 +436,6 @@ function(addDeployIPA name bundle_id targetDir version appleDir)
       QT_IOS_LAUNCHSCREEN_STORYBOARD
       LAUNCHSCREEN_STORYBOARD "${appleDir}/LaunchScreen.storyboard"
       CATALOG_APPICON "AppIcon"
-      CATALOG_LAUNCHIMAGE "LaunchImage"
       ORIENTATION_PORTRAIT
       ORIENTATION_PORTRAIT_UPDOWN
       ORIENTATION_LANDSCAPE_LEFT
