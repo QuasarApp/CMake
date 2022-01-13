@@ -67,8 +67,9 @@
 # - targetDir - Target dir for output apk file.
 # - extraLibs - list f the extra libraryes (like the openssl)
 #
-# addDeployIPA name targetDir version appleDir
+# addDeployIPA name bundle_id targetDir version appleDir
 # - name - This is prefix of added subtarget (any word).
+# - bundle_id - This is bundle id of application.
 # - targetDir - Target dir for output apk file.
 # - version - This is ersaion string of package
 # - plist - This is path to Info.plist file
@@ -408,7 +409,7 @@ function(addDeployQIF name sourceDir targetDir config)
 
 endfunction()
 
-function(addDeployIPA name targetDir version appleDir)
+function(addDeployIPA name bundle_id targetDir version appleDir)
 
     if(TARGET deployIPA${name})
         message("the deployIPA${name} target already created!")
@@ -424,6 +425,7 @@ function(addDeployIPA name targetDir version appleDir)
 
     add_qt_ios_app(createIPA${name} ${name}
       NAME ${name}
+      BUNDLE_IDENTIFIER ${bundle_id}
       LONG_VERSION ${version}
       COPYRIGHT "QuasarApp 2022-2022"
       ASSET_DIR "${appleDir}/Assets.xcassets"
