@@ -67,10 +67,12 @@
 # - targetDir - Target dir for output apk file.
 # - extraLibs - list f the extra libraryes (like the openssl)
 #
-# addDeployIPA(name plist targetDir)
+# addDeployIPA name targetDir version appleDir
 # - name - This is prefix of added subtarget (any word).
-# - plist - This is path to Info.plist file
 # - targetDir - Target dir for output apk file.
+# - version - This is ersaion string of package
+# - plist - This is path to Info.plist file
+# - appleDir - This is main platform dir of apple. By default it is "${CMAKE_CURRENT_SOURCE_DIR}/apple"
 #
 # initDeploy() // Create a main deploy target for all addDeploy subtargets. This method need to call before invoiced of all addDeploy methods.
 #
@@ -406,7 +408,7 @@ function(addDeployQIF name sourceDir targetDir config)
 
 endfunction()
 
-function(addDeployIPA name plist targetDir)
+function(addDeployIPA name targetDir version appleDir)
 
     if(TARGET deployIPA${name})
         message("the deployIPA${name} target already created!")
@@ -414,13 +416,22 @@ function(addDeployIPA name plist targetDir)
 
     endif(TARGET deployIPA${name})
 
+    if("${appleDir}" STREQUAL "")
+        set(appleDir "${CMAKE_CURRENT_SOURCE_DIR}/apple")
+    endif()
+    message("Use Aple dir: ${appleDir}")
+
+
     add_qt_ios_app(createIPA${name} ${name}
       NAME ${name}
-      LONG_VERSION ${QATERIALGALLERY_VERSION}.${QATERIALGALLERY_VERSION_TAG}
+      LONG_VERSION ${version}
       COPYRIGHT "QuasarApp 2022-2022"
-      ASSET_DIR "${CMAKE_CURRENT_SOURCE_DIR}/apple/Assets.xcassets"
-      CUSTOM_PLIST "${plist}"
+      ASSET_DIR "${appleDir}/Assets.xcassets"
       TEAM_ID ${CMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM}
+      QT_IOS_LAUNCHSCREEN_STORYBOARD
+      LAUNCHSCREEN_STORYBOARD "${appleDir}/LaunchScreen.storyboard"
+      CATALOG_APPICON "AppIcon"
+      CATALOG_LAUNCHIMAGE "LaunchImage"
       ORIENTATION_PORTRAIT
       ORIENTATION_PORTRAIT_UPDOWN
       ORIENTATION_LANDSCAPE_LEFT
@@ -434,7 +445,7 @@ function(addDeployIPA name plist targetDir)
         deployIPA${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.ipa ${targetDir}
         COMMENT "copy ipa: ${CMAKE_COMMAND} -E copy *.ipa ${targetDir}"
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/
+        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${name}Ipa"
         DEPENDS createIPA${name}
 
     )
