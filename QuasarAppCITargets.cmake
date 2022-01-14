@@ -72,7 +72,6 @@
 # - bundle_id - This is bundle id of application.
 # - targetDir - Target dir for output apk file.
 # - version - This is ersaion string of package
-# - plist - This is path to Info.plist file
 # - appleDir - This is main platform dir of apple. By default it is "${CMAKE_CURRENT_SOURCE_DIR}/apple"
 #
 # initDeploy() // Create a main deploy target for all addDeploy subtargets. This method need to call before invoiced of all addDeploy methods.
@@ -420,6 +419,12 @@ function(addDeployIPA name bundle_id targetDir version appleDir)
     if("${appleDir}" STREQUAL "")
         set(appleDir "${CMAKE_CURRENT_SOURCE_DIR}/apple")
     endif()
+
+    set(QUASAR_CUSTOM_PLIST "${appleDir}/info.plist")
+    if (EXISTS "${QUASAR_CUSTOM_PLIST}")
+        set(QUASAR_CUSTOM_PLIST "${CMAKE_MODULE_PATH}/QtIosCMake/Info.plist.in")
+    endif()
+
     message("Use Aple dir: ${appleDir}")
 
 
@@ -429,7 +434,7 @@ function(addDeployIPA name bundle_id targetDir version appleDir)
       LONG_VERSION ${version}
       SHORT_VERSION ${version}
       VERSION ${version}
-
+      CUSTOM_PLIST ${QUASAR_CUSTOM_PLIST}
       COPYRIGHT "QuasarApp 2022-2022"
       ASSET_DIR "${appleDir}/Assets.xcassets"
       TEAM_ID ${CMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM}
