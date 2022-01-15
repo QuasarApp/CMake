@@ -420,7 +420,7 @@ function(addDeployIPA name bundle_id targetDir version appleDir)
         set(appleDir "${CMAKE_CURRENT_SOURCE_DIR}/apple")
     endif()
 
-    set(QUASAR_CUSTOM_PLIST "${appleDir}/info.plist")
+    set(QUASAR_CUSTOM_PLIST "${appleDir}/Info.plist")
     if (EXISTS "${QUASAR_CUSTOM_PLIST}")
         set(QUASAR_CUSTOM_PLIST "${CMAKE_CURRENT_LIST_DIR}/QtIosCMake/Info.plist.in")
     endif()
