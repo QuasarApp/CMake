@@ -113,6 +113,7 @@ set(TEST_TARGETS_LIST "")
 set(DEPLOY_TARGETS_LIST "")
 set(RELEASE_TARGETS_LIST "")
 set(DIR_FOR_TESTING ${PROJECT_SOURCE_DIR}/Testing)
+set(QUASAR_MODULE_CURRENT_DIR ${CMAKE_CURRENT_LIST_DIR})
 
 if (ANDROID)
     include(${CMAKE_CURRENT_LIST_DIR}/qt-android-cmake/AddQtAndroidApk.cmake)
@@ -422,7 +423,7 @@ function(addDeployIPA name bundle_id targetDir version appleDir)
 
     set(QUASAR_CUSTOM_PLIST "${appleDir}/Info.plist")
     if (EXISTS "${QUASAR_CUSTOM_PLIST}")
-        set(QUASAR_CUSTOM_PLIST "${CMAKE_CURRENT_LIST_DIR}/QtIosCMake/Info.plist.in")
+        set(QUASAR_CUSTOM_PLIST "${QUASAR_MODULE_CURRENT_DIR}/QtIosCMake/Info.plist.in")
     endif()
 
     message("Use Aple dir: ${appleDir}")
