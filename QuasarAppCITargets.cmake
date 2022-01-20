@@ -422,12 +422,11 @@ function(addDeployIPA name bundle_id targetDir version appleDir)
     endif()
 
     set(QUASAR_CUSTOM_PLIST "${appleDir}/Info.plist")
-    if (EXISTS "${QUASAR_CUSTOM_PLIST}")
+    if (NOT EXISTS "${QUASAR_CUSTOM_PLIST}")
         set(QUASAR_CUSTOM_PLIST "${QUASAR_MODULE_CURRENT_DIR}/QtIosCMake/Info.plist.in")
     endif()
 
     message("Use Aple dir: ${appleDir}")
-
 
     add_qt_ios_app(createIPA${name} ${name}
       NAME ${name}
