@@ -428,7 +428,7 @@ function(addDeployIPA name bundle_id targetDir version appleDir)
 
     message("Use Apple dir: ${appleDir}")
 
-    add_qt_ios_app(createIPA${name} ${name}
+    add_qt_ios_app(${name}
       NAME ${name}
       BUNDLE_IDENTIFIER ${bundle_id}
       LONG_VERSION ${version}
