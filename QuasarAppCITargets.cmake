@@ -455,7 +455,6 @@ function(addDeployIPA name bundle_id targetDir version appleDir)
         COMMAND ${CMAKE_COMMAND} -E copy *.ipa ${targetDir}
         COMMENT "copy ipa: ${CMAKE_COMMAND} -E copy *.ipa ${targetDir}"
         WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${name}Ipa"
-        DEPENDS createIPA${name}
 
     )
 
