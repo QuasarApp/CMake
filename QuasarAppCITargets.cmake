@@ -450,6 +450,31 @@ function(addDeployIPA name bundle_id targetDir version appleDir)
       VERBOSE
     )
 
+
+    if (${QT_VERSION_MAJOR} EQUAL 5)
+
+        if("${qmlRoot}" STREQUAL "")
+            set(qmlRoot ${CMAKE_SOURCE_DIR})
+        endif()
+
+        qt_generate_plugin_import(${name} VERBOSE)
+
+        # EXTRA_PLUGIN are the one required by plugin loaded by qt_generate_plugin_import
+        # It's not automatic yet :( All this workflow might change in future version of qt
+        # with better and better cmake support
+        qt_generate_qml_plugin_import(${name}
+          QML_SRC ${qmlRoot}
+          EXTRA_PLUGIN
+            QtQuickVirtualKeyboardPlugin
+            QtQuickVirtualKeyboardSettingsPlugin
+            QtQuickVirtualKeyboardStylesPlugin
+            QmlFolderListModelPlugin
+            QQuickLayoutsPlugin
+          VERBOSE
+        )
+    endif()
+
+
     ADD_CUSTOM_TARGET(
         deployIPA${name}
         COMMAND ${CMAKE_COMMAND} -E copy *.ipa ${targetDir}
