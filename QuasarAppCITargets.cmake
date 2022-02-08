@@ -120,7 +120,9 @@ if (ANDROID)
 endif()
 
 if (IOS)
+    include(${CMAKE_CURRENT_LIST_DIR}/QtStaticCMake/QtStaticCMake.cmake)
     include(${CMAKE_CURRENT_LIST_DIR}/QtIosCMake/AddQtIosApp.cmake)
+
 endif()
 
 function(emptyTarget targetName)
