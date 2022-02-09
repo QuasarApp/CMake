@@ -472,9 +472,11 @@ function(addDeployIPA name bundle_id targetDir version appleDir)
             QtQuickVirtualKeyboardStylesPlugin
             QmlFolderListModelPlugin
             QQuickLayoutsPlugin
-            QSvgPlugin
           VERBOSE
         )
+
+        qt5_import_plugins(${name} INCLUDE Qt5::QSvgPlugin)
+
     endif()
 
 
