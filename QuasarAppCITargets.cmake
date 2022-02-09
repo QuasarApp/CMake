@@ -472,6 +472,7 @@ function(addDeployIPA name bundle_id targetDir version appleDir)
             QtQuickVirtualKeyboardStylesPlugin
             QmlFolderListModelPlugin
             QQuickLayoutsPlugin
+            QSvgPlugin
           VERBOSE
         )
     endif()
