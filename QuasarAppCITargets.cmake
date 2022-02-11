@@ -490,7 +490,7 @@ function(addDeployIPA name bundle_id targetDir version appleDir)
 
     ADD_CUSTOM_TARGET(
         deployIPAd${name}
-        COMMAND ${CMAKE_COMMAND} -E copy *.ipa ${targetDir}
+        COMMAND ${CMAKE_COMMAND} -E copy *.plist ${targetDir}
         COMMENT "copy plist: ${CMAKE_COMMAND} -E copy *.plist ${targetDir}"
         WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${name}Ipa"
 
