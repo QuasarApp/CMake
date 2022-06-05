@@ -58,6 +58,7 @@ function(initWasmSupport name deployFile)
     if (DEFINED TARGET_PLATFORM_TOOLCHAIN)
         if (${TARGET_PLATFORM_TOOLCHAIN} STREQUAL "wasm32")
             message(added deploy step for site)
+            set(QA_WASM32 ON CACHE BOOL "Custom define that enabled only when wasm32 platform are used" FORCE)
 
             set_target_properties(${name} PROPERTIES OUTPUT_NAME "${name}.js")
 
