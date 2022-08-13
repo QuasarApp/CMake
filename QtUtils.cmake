@@ -53,6 +53,9 @@ function(prepareQM name sourceDir ts_files)
 
 endfunction()
 
+# This macros create or update next variables:
+# GIT_COMMIT_COUNT - This variable contains count of the commits.
+# GIT_COMMIT_HASH - This variable contains short hash of the current cummit.
 macro(updateGitVars)
 
     execute_process(
@@ -71,3 +74,21 @@ macro(updateGitVars)
 
 endmacro()
 
+
+# This function do some as cmake function configure_file but add files into target for convenient access from editor
+# Arguments :
+#  name - it is name of the target for that will be configuret selected file.
+#  file - it is file that will be configured
+function(configure_file_in name file)
+
+    if (TARGET ${name}Templates)
+        target_sources(${name}Templates PRIVATE "${file}.in")
+    else()
+        add_custom_target(${name}Templates ALL
+            SOURCES "${file}.in"
+        )
+    endif()
+
+    configure_file("${file}.in" ${file} @ONLY)
+
+endfunction()
