@@ -31,10 +31,10 @@
 # - targets - This is list of CQtDeployer targets see CQtDeployer help https://github.com/QuasarApp/CQtDeployer/wiki/Options (-bin).
 # - targetDir - This is target directory see option targetDir of CQtDeployer help https://github.com/QuasarApp/CQtDeployer/wiki/Options (-targetDir).
 #
-# addDeployFromFile(name) // Some as initDeploy, but use CQtDeployer.json for configuration.
+# addDeployFromFile(name) // Some as addDeploy, but use CQtDeployer.json for configuration.
 # - name - This is prefix of added subtarget (any word).
 #
-# addDeployFromCustomFile(name file) // Some as initDeploy, but use custom path for deployment file for configuration.
+# addDeployFromCustomFile(name file) // Some as addDeploy, but use custom path for deployment file for configuration.
 # - name - This is prefix of added subtarget (any word).
 # - file - This is path to config file of cqtdeployer.
 #
@@ -45,12 +45,6 @@
 #    Example:
 #       set(SNAPCRAFT_MODE "--destructive-mode")
 #       addDeploySnap("Client" ${TARGET_DIR})
-#
-# addDeployQIF(name sourceDir targetDir config) // Add to deploy step substeps for create Qt Install FrameWork Installer.
-# - name - This is prefix of added subtarget (any word).
-# - location for created installer.
-# - sourceDir - Path to folder with qif template.
-# - config - Path to config file of qif template.
 #
 # addDeploySignedAPK(name input aliase keystore keystorePass targetDir) // Add subtargets of deploy setep for create signed android apk file.
 # - name - This is prefix of added subtarget (any word).
@@ -375,39 +369,6 @@ function(addDeploySnap name targetDir)
 
     add_dependencies(deploy snap${name})
 
-
-endfunction()
-
-function(addDeployQIF name sourceDir targetDir config)
-
-    if(TARGET qifDeploy${name})
-        message("the qifDeploy${name} target already created!")
-        return()
-
-    endif(TARGET qifDeploy${name})
-
-    find_program(BINARYCREATOR_EXE binarycreator)
-
-    IF(NOT EXISTS ${BINARYCREATOR_EXE})
-        message("the Binarycreator not exits please install or adde path to QtInstaller Framework to PATH and run cmake again!")
-        return()
-    endif(NOT EXISTS ${BINARYCREATOR_EXE})
-
-    set(OUT_EXE ${targetDir}/${PROJECT_NAME}OfllineInstaller.run)
-    if (WIN32)
-        set(OUT_EXE ${targetDir}/${PROJECT_NAME}OfllineInstaller.exe)
-    endif (WIN32)
-
-    ADD_CUSTOM_TARGET(
-        qifDeploy${name}
-        COMMAND ${BINARYCREATOR_EXE} --offline-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}
-        COMMENT "deploy qif: ${BINARYCREATOR_EXE} --offline-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}"
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        DEPENDS deploy${name}
-
-    )
-
-    add_dependencies(deploy qifDeploy${name})
 
 endfunction()
 
