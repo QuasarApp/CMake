@@ -41,9 +41,9 @@
 # addDeploySnap(name targetDir) // Add to deploy step substeps for create a snap package.
 # - name - This is prefix of added subtarget (any word).
 # - targetDir - Destanation direcroty for snap files.
-#  The addDeploySnap method are support the SNAPCRAFT_MODE variable. If you need to use custom snapcraft mode.
+#  The addDeploySnap method are support the SNAPCRAFT_EXTRA_ARG variable. If you need to use custom snapcraft mode.
 #    Example:
-#       set(SNAPCRAFT_MODE "--destructive-mode")
+#       set(SNAPCRAFT_EXTRA_ARG "--destructive-mode")
 #       addDeploySnap("Client" ${TARGET_DIR})
 #
 # addDeploySignedAPK(name input aliase keystore keystorePass targetDir) // Add subtargets of deploy setep for create signed android apk file.
@@ -321,6 +321,51 @@ function(addDeployFromCustomFile name file)
 endfunction()
 
 function(addDeploySnap name targetDir)
+
+    if(TARGET snap${name})
+        message("the snap${name} target already created!")
+        return()
+
+    endif(TARGET snap${name})
+
+    find_program(SNAPCRAFT_EXE "snapcraft")
+
+    if(NOT EXISTS ${SNAPCRAFT_EXE})
+        message("please install the snapcraft before deploy this project! Use: sudo snap install snapcraft --classic")
+        return()
+    endif(NOT EXISTS ${SNAPCRAFT_EXE})
+
+
+    ADD_CUSTOM_TARGET(
+        snapcraft${name}
+        COMMAND snapcraft ${SNAPCRAFT_EXTRA_ARG}
+        COMMENT "create snap: snapcraft ${SNAPCRAFT_EXTRA_ARG}"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        DEPENDS deploy${name}
+    )
+
+    ADD_CUSTOM_TARGET(
+        snapcraftCopy${name}
+        COMMAND ${CMAKE_COMMAND} -E copy *.snap ${targetDir}
+        COMMENT "copy snap: ${CMAKE_COMMAND} -E copy *.snap ${targetDir}"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        DEPENDS snapcraft${name}
+
+    )
+
+    ADD_CUSTOM_TARGET(
+        snap${name}
+        COMMENT "deploy snap${name}"
+        DEPENDS snapcraftCopy${name}
+
+    )
+
+    add_dependencies(deploy snap${name})
+
+
+endfunction()
+
+function(addDeploySnapOld name targetDir)
 
     if(TARGET snap${name})
         message("the snap${name} target already created!")
