@@ -335,13 +335,20 @@ function(addDeploySnap name targetDir)
         return()
     endif(NOT EXISTS ${SNAPCRAFT_EXE})
 
+    ADD_CUSTOM_TARGET(
+        chmodsnap${name}
+        COMMAND chmod -R 777 "${CMAKE_SOURCE_DIR}/snap"
+        COMMENT "create snap: snapcraft ${SNAPCRAFT_EXTRA_ARG}"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        DEPENDS deploy${name}
+    )
 
     ADD_CUSTOM_TARGET(
         snapcraft${name}
         COMMAND snapcraft ${SNAPCRAFT_EXTRA_ARG}
         COMMENT "create snap: snapcraft ${SNAPCRAFT_EXTRA_ARG}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        DEPENDS deploy${name}
+        DEPENDS chmodsnap${name}
     )
 
     ADD_CUSTOM_TARGET(
