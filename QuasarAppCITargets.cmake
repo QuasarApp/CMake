@@ -338,7 +338,7 @@ function(addDeploySnap name targetDir)
     ADD_CUSTOM_TARGET(
         chmodsnap${name}
         COMMAND chmod -R 777 "${CMAKE_SOURCE_DIR}/snap"
-        COMMENT "create snap: snapcraft ${SNAPCRAFT_EXTRA_ARG}"
+        COMMENT "chmod -R 777 ${CMAKE_SOURCE_DIR}/snap"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         DEPENDS deploy${name}
     )
