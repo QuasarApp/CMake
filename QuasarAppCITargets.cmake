@@ -275,7 +275,7 @@ function(addDeployFromFile name)
 
     ADD_CUSTOM_TARGET(
         deploy${name}
-        COMMAND cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\""
+        COMMAND cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\"
         COMMENT "Deploy: cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\""
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
