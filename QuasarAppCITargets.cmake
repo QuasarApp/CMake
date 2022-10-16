@@ -325,8 +325,8 @@ function(addDeploySnap name targetDir)
 
     ADD_CUSTOM_TARGET(
         chmodsnap${name}
-        COMMAND chmod -R 777 "${CMAKE_SOURCE_DIR}/snap"
-        COMMENT "chmod -R 777 ${CMAKE_SOURCE_DIR}/snap"
+        COMMAND chmod -R 777 "${CMAKE_SOURCE_DIR}/snap/gui"
+        COMMENT "chmod -R 777 ${CMAKE_SOURCE_DIR}/snap/gui"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         DEPENDS deploy${name}
     )
