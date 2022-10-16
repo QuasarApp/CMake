@@ -256,8 +256,8 @@ function(addDeploy name targets targetDir)
 
     ADD_CUSTOM_TARGET(
         deploy${name}
-        COMMAND cqtdeployer clear -binPrefix \"${CMAKE_BINARY_DIR}\" -bin ${targets} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${targetDir} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\" -recursiveDepth 5
-        COMMENT "Deploy: cqtdeployer clear -binPrefix \"${CMAKE_BINARY_DIR}\" -bin ${targets} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${targetDir} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
+        COMMAND cqtdeployer clear -binPrefix \"${CMAKE_BINARY_DIR}\" -bin ${targets} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${targetDir}
+        COMMENT "Deploy: cqtdeployer clear -binPrefix \"${CMAKE_BINARY_DIR}\" -bin ${targets} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${targetDir}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 
@@ -275,8 +275,8 @@ function(addDeployFromFile name)
 
     ADD_CUSTOM_TARGET(
         deploy${name}
-        COMMAND cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\"
-        COMMENT "Deploy: cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -libDir ${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}"
+        COMMAND cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\""
+        COMMENT "Deploy: cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\""
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
     add_dependencies(deploy deploy${name})
@@ -299,8 +299,8 @@ function(addDeployFromCustomFile name file)
     ADD_CUSTOM_TARGET(
         deploy${name}
         SOURCES ${${name}files}
-        COMMAND cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\"
-        COMMENT "Deploy: cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file} -libDir ${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}"
+        COMMAND cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}
+        COMMENT "Deploy: cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 
