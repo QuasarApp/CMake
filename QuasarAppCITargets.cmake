@@ -169,14 +169,10 @@ function(addTestsArg name testExec arg)
 
     endif (WIN32)
 
-
-    find_program(Q_MAKE_EXE qmake)
-
-
     ADD_CUSTOM_TARGET(
         deployTest${name}
-        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\" -recursiveDepth 5
-        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
+        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\" -recursiveDepth 5
+        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         )
 
@@ -209,12 +205,10 @@ function(addTests name testExec)
 
     endif (WIN32)
 
-    find_program(Q_MAKE_EXE qmake)
-
     ADD_CUSTOM_TARGET(
         deployTest${name}
-        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\" -recursiveDepth 5
-        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -qmake ${Q_MAKE_EXE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
+        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\" -recursiveDepth 5
+        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
     )
 
 
@@ -260,12 +254,10 @@ function(addDeploy name targets targetDir)
 
     endif(TARGET deploy${name})
 
-    find_program(Q_MAKE_EXE qmake)
-
     ADD_CUSTOM_TARGET(
         deploy${name}
-        COMMAND cqtdeployer clear -binPrefix \"${CMAKE_BINARY_DIR}\" -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\" -recursiveDepth 5
-        COMMENT "Deploy: cqtdeployer clear -binPrefix \"${CMAKE_BINARY_DIR}\" -bin ${targets} -qmake ${Q_MAKE_EXE} -targetDir ${targetDir} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
+        COMMAND cqtdeployer clear -binPrefix \"${CMAKE_BINARY_DIR}\" -bin ${targets} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${targetDir} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\" -recursiveDepth 5
+        COMMENT "Deploy: cqtdeployer clear -binPrefix \"${CMAKE_BINARY_DIR}\" -bin ${targets} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${targetDir} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 
@@ -281,12 +273,10 @@ function(addDeployFromFile name)
 
     endif(TARGET deploy${name})
 
-    find_program(Q_MAKE_EXE qmake)
-
     ADD_CUSTOM_TARGET(
         deploy${name}
-        COMMAND cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix \"${CMAKE_BINARY_DIR}\" -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\"
-        COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix \"${CMAKE_BINARY_DIR}\" -libDir ${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}"
+        COMMAND cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\"
+        COMMENT "Deploy: cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -libDir ${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
     add_dependencies(deploy deploy${name})
@@ -302,8 +292,6 @@ function(addDeployFromCustomFile name file)
 
     endif(TARGET deploy${name})
 
-    find_program(Q_MAKE_EXE qmake)
-
     file(GLOB ${name}files
             "${file}*"
         )
@@ -311,8 +299,8 @@ function(addDeployFromCustomFile name file)
     ADD_CUSTOM_TARGET(
         deploy${name}
         SOURCES ${${name}files}
-        COMMAND cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\"
-        COMMENT "Deploy: cqtdeployer -qmake ${Q_MAKE_EXE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file} -libDir ${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}"
+        COMMAND cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\"
+        COMMENT "Deploy: cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file} -libDir ${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 

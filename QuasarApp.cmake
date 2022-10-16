@@ -34,9 +34,19 @@ IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE Release)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
+if (NOT QT_QT_ROOT)
+    if (QT_VERSION_MAJOR)
+        get_filename_component(QT_QT_ROOT "${Qt${QT_VERSION_MAJOR}Core_DIR}/../../.." ABSOLUTE)
+    endif()
+endif()
+
+if (NOT QT_QMAKE_EXECUTABLE)
+    message(The QT_QMAKE_EXECUTABLE variable is not set. Try to Initialize from qtdir)
+    find_program(QT_QMAKE_EXECUTABLE qmake)
+endif()
+
 ## Default Defines
 ## End DEfault defines
-
 include(${CMAKE_CURRENT_LIST_DIR}/ccache.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/QuasarAppCITargets.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/QtUtils.cmake)
