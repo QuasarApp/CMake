@@ -653,7 +653,7 @@ function(addReleaseSnap name)
 
     ADD_CUSTOM_TARGET(
         snapRelease${name}
-        COMMAND snapcraft push
+        COMMAND snapcraft upload --release=edge *.snap
         COMMENT "snapRelease${name} release"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 
