@@ -44,7 +44,8 @@ if (NOT EXISTS ${QT_QMAKE_EXECUTABLE})
     message("The QT_QMAKE_EXECUTABLE variable is not set or path is wrong QT_QMAKE_EXECUTABLE=${QT_QMAKE_EXECUTABLE}")
     message("Try to Initialize from qtdir")
 
-    find_program(QT_QMAKE_EXECUTABLE qmake)
+    find_program(QMAKE_EXECUTABLE qmake)
+    set(QT_QMAKE_EXECUTABLE ${QMAKE_EXECUTABLE})
 endif()
 
 ## Default Defines
