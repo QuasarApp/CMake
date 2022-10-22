@@ -40,8 +40,10 @@ if (NOT QT_QT_ROOT)
     endif()
 endif()
 
-if (NOT QT_QMAKE_EXECUTABLE)
-    message(The QT_QMAKE_EXECUTABLE variable is not set. Try to Initialize from qtdir)
+if (NOT EXISTS ${QT_QMAKE_EXECUTABLE})
+    message("The QT_QMAKE_EXECUTABLE variable is not set or path is wrong QT_QMAKE_EXECUTABLE=${QT_QMAKE_EXECUTABLE}")
+    message("Try to Initialize from qtdir")
+
     find_program(QT_QMAKE_EXECUTABLE qmake)
 endif()
 
