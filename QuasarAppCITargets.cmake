@@ -438,7 +438,7 @@ function(addDeployIPA name bundle_id targetDir version appleDir)
       SHORT_VERSION ${version}
       VERSION ${version}
       CUSTOM_PLIST ${QUASAR_CUSTOM_PLIST}
-      COPYRIGHT "QuasarApp 2022-2022"
+      COPYRIGHT "QuasarApp 2022-2023"
       ASSET_DIR "${appleDir}/Assets.xcassets"
       TEAM_ID ${CMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM}
       QT_IOS_LAUNCHSCREEN_STORYBOARD
