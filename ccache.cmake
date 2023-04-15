@@ -28,6 +28,11 @@ if(CCACHE_PROGRAM)
         configure_file("${CC_LAUNCHER}.in" "${CC_LAUNCHER}")
         configure_file("${CXX_LAUNCHER}.in" "${CXX_LAUNCHER}")
 
+        execute_process(COMMAND chmod +x
+                        "${CC_LAUNCHER}"
+                        "${CXX_LAUNCHER}"
+        )
+
         # Set Xcode project attributes to route compilation and linking
         # through our scripts
         set(CMAKE_XCODE_ATTRIBUTE_CC         ${CC_LAUNCHER} CACHE INTERNAL "override CMAKE_XCODE_ATTRIBUTE_CC" )
