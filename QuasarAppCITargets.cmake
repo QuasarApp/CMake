@@ -667,7 +667,7 @@ function(addReleaseSnap name)
 
 endfunction()
 
-function(addReleaseIpa name userName)
+function(addReleaseIpa name userName keychain_key)
 
     if(TARGET ipaRelease${name})
         message("the ipaRelease${name} target already created!")
@@ -677,7 +677,7 @@ function(addReleaseIpa name userName)
 
     ADD_CUSTOM_TARGET(
         ipaRelease${name}
-        COMMAND xcrun altool --upload-app --type ios --file ${CMAKE_CURRENT_BINARY_DIR}/${name}Ipa/${name}.ipa --username ${userName}
+        COMMAND xcrun altool --upload-app --type ios --file ${CMAKE_CURRENT_BINARY_DIR}/${name}Ipa/${name}.ipa -u ${userName} -p "@keychain:${keychain_key}"
         COMMENT "xcrun altool --upload-app --type ios --file ${CMAKE_CURRENT_BINARY_DIR}/${name}Ipa/${name}.ipa"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 
