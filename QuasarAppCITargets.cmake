@@ -81,6 +81,10 @@
 # addReleaseSnap(name) // Create subtargets for publish snap deployed snap package.
 # - name - This is prefix of added subtarget (any word).
 #
+# addReleaseIpa(name username) // Create subtargets for publish snap deployed snap package.
+# - name - This is prefix of added subtarget (any word).
+# - username - This is name if user that will release app into testflight
+#
 # addReleaseQif(name sourceDir targetDir) // Create subtargets for publish the qif package on qif repository.
 # - name - This is prefix of added subtarget (any word).
 # - sourceDir - Path to folder with qif template.
@@ -660,6 +664,26 @@ function(addReleaseSnap name)
     )
 
     add_dependencies(release snapRelease${name})
+
+endfunction()
+
+function(addReleaseIpa name userName)
+
+    if(TARGET ipaRelease${name})
+        message("the ipaRelease${name} target already created!")
+        return()
+
+    endif(TARGET ipaRelease${name})
+
+    ADD_CUSTOM_TARGET(
+        ipaRelease${name}
+        COMMAND xcrun altool --upload-app --type ios --file ${CMAKE_CURRENT_BINARY_DIR}/${name}Ipa/${name}.ipa --username ${userName}
+        COMMENT "xcrun altool --upload-app --type ios --file ${CMAKE_CURRENT_BINARY_DIR}/${name}Ipa/${name}.ipa"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+
+    )
+
+    add_dependencies(release ipaRelease${name})
 
 endfunction()
 
