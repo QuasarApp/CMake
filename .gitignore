@@ -9,3 +9,5 @@ compile_commands.json
 CTestTestfile.cmake
 .cmake
 build.ninja
+ccahe_cc_launcher.sh
+ccahe_cxx_launcher.sh

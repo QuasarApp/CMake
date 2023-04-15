@@ -21,17 +21,21 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_PROGRAM}") # Less useful to do it for linking, see edit2
 
     if(CMAKE_GENERATOR STREQUAL "Xcode")
+
+        set(CC_LAUNCHER ${CMAKE_CURRENT_LIST_DIR}/ccahe_cc_launcher.sh)
+        set(CXX_LAUNCHER ${CMAKE_CURRENT_LIST_DIR}/ccahe_cxx_launcher.sh)
+
+        configure_file("${CC_LAUNCHER}.in" "${CC_LAUNCHER}")
+        configure_file("${CXX_LAUNCHER}.in" "${CXX_LAUNCHER}")
+
         # Set Xcode project attributes to route compilation and linking
         # through our scripts
-        set(CMAKE_XCODE_ATTRIBUTE_CC         "${CCACHE_PROGRAM} ${CMAKE_C_COMPILER}" CACHE INTERNAL "override CMAKE_XCODE_ATTRIBUTE_CC" )
-        set(CMAKE_XCODE_ATTRIBUTE_CXX        "${CCACHE_PROGRAM} ${CMAKE_CXX_COMPILER}" CACHE INTERNAL "override CMAKE_XCODE_ATTRIBUTE_CC")
-        set(CMAKE_XCODE_ATTRIBUTE_LD         "${CCACHE_PROGRAM} ${CMAKE_LD_COMPILER}" CACHE INTERNAL "override CMAKE_XCODE_ATTRIBUTE_CC")
-        set(CMAKE_XCODE_ATTRIBUTE_LDPLUSPLUS "${CCACHE_PROGRAM} ${CMAKE_LDPLUSPLUS_COMPILER}" CACHE INTERNAL "override CMAKE_XCODE_ATTRIBUTE_CC")
+        set(CMAKE_XCODE_ATTRIBUTE_CC         ${CC_LAUNCHER} CACHE INTERNAL "override CMAKE_XCODE_ATTRIBUTE_CC" )
+        set(CMAKE_XCODE_ATTRIBUTE_CXX        ${CXX_LAUNCHER} CACHE INTERNAL "override CMAKE_XCODE_ATTRIBUTE_CC")
 
         message("CMAKE_XCODE_ATTRIBUTE_CC = ${CMAKE_XCODE_ATTRIBUTE_CC}")
         message("CMAKE_XCODE_ATTRIBUTE_CXX = ${CMAKE_XCODE_ATTRIBUTE_CXX}")
-        message("CMAKE_XCODE_ATTRIBUTE_LD = ${CMAKE_XCODE_ATTRIBUTE_LD}")
-        message("CMAKE_XCODE_ATTRIBUTE_LDPLUSPLUS = ${CMAKE_XCODE_ATTRIBUTE_LDPLUSPLUS}")
+
     endif()
 endif()
 
