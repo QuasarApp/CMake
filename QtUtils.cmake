@@ -93,19 +93,3 @@ function(configure_file_in name file)
 
 endfunction()
 
-
-# This function do convert shader files to prepared for qt shaders
-# Arguments :
-#  name - it is name of the target for that will be configuret selected file.
-#  file - it is file that will be configured
-# see https://doc.qt.io/qt-6/qtshadertools-index.html
-function(configure_qt_shader name file)
-
-
-    find_program(QSB qsb)
-    execute_process(COMMAND ${QSB} "-o" "${file}.qsb" "${file}"
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                    COMMAND_ERROR_IS_FATAL ANY)
-
-
-endfunction()
