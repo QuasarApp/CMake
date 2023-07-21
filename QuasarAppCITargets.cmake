@@ -118,10 +118,6 @@ if (ANDROID)
 endif()
 
 if (IOS)
-    if (${QT_VERSION_MAJOR} EQUAL 5)
-        include(${CMAKE_CURRENT_LIST_DIR}/QtStaticCMake/QtStaticCMake.cmake)
-    endif()
-
     include(${CMAKE_CURRENT_LIST_DIR}/QtIosCMake/AddQtIosApp.cmake)
 endif()
 
