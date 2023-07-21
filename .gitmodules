@@ -1,6 +1,6 @@
 [submodule "QtStaticCMake"]
 	path = QtStaticCMake
-	url = https://github.com/OlivierLDff/QtStaticCMake
+	url = https://github.com/QuasarApp/QtStaticCMake.git
 [submodule "DoxyStyle"]
 	path = DoxyStyle
 	url = https://github.com/QuasarApp/DoxyStyle.git
