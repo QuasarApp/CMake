@@ -647,7 +647,7 @@ function(addReleaseCustom name pyFile)
 
 endfunction()
 
-function(addReleaseSnap name)
+function(addReleaseSnap name branch)
 
     if(TARGET snapRelease${name})
         message("the snapRelease${name} target already created!")
@@ -655,9 +655,14 @@ function(addReleaseSnap name)
 
     endif(TARGET snapRelease${name})
 
+    SET(SNAP_CHANNEL edge)
+    if (${branch})
+        set(SNAP_CHANNEL ${branch})
+    endif()
+
     ADD_CUSTOM_TARGET(
         snapRelease${name}
-        COMMAND snapcraft upload --release=edge *.snap
+        COMMAND snapcraft upload --release=${SNAP_CHANNEL} *.snap
         COMMENT "snapRelease${name} release"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 
