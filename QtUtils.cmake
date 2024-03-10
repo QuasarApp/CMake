@@ -74,6 +74,35 @@ macro(updateGitVars)
 
 endmacro()
 
+# This macros create or update next variables:
+# GIT_COMMIT_COUNT - This variable contains count of the commits.
+# GIT_COMMIT_COUNT_FROM - This variable contains count of the commits from the hash.
+# GIT_COMMIT_HASH - This variable contains short hash of the current cummit.
+macro(updateGitVarsWithHash hash)
+
+    execute_process(
+        COMMAND git rev-list --count HEAD
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_COMMIT_COUNT
+        )
+    string(STRIP "${GIT_COMMIT_COUNT}" GIT_COMMIT_COUNT)
+
+    execute_process(
+        COMMAND git rev-list ${hash}..HEAD --count
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_COMMIT_COUNT_FROM
+        )
+    string(STRIP "${GIT_COMMIT_COUNT_FROM}" GIT_COMMIT_COUNT_FROM)
+
+    execute_process(
+        COMMAND git rev-parse --short HEAD
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_COMMIT_HASH
+        )
+    string(STRIP "${GIT_COMMIT_HASH}" GIT_COMMIT_HASH)
+
+endmacro()
+
 
 # This function do some as cmake function configure_file but add files into target for convenient access from editor
 # Arguments :
