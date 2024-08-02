@@ -308,7 +308,7 @@ function(addDeployFromCustomFile name file)
             COMMENT "Deploy: cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}"
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         )
-    elseif()
+    else()
         ADD_CUSTOM_TARGET(
             deploy${name}
             SOURCES ${${name}files}
