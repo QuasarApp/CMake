@@ -313,7 +313,7 @@ function(addDeployFromCustomFile name file)
             deploy${name}
             SOURCES ${${name}files}
             COMMAND cqtdeployer noQt -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}
-            COMMENT "Deploy: cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}"
+            COMMENT "Deploy: cqtdeployer noQt -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}"
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         )
     endif()
