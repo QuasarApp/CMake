@@ -39,9 +39,15 @@ endif()
 #  VERSION - it is version of the QML module. Default value is 1.0.
 #  MODULE_NAME - it is name of the QML module. Default value is TARGET_NAME.
 #   For example if the target name is QEQuick3d then the module name will be QEQuick3dQML.
+#  PUBLIC - it is flag that indicate that the QML module will be public and afailable to using in all child libs. Default value is OFF.
+
 # Example:
 # addQML(QEQuick3d QML_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 # addQML(QEQuick3d QML_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src VERSION 1.0 MODULE_NAME QEQuick3d)
+#
+# To get make qml module for your shared or static library:
+# addQML(${CURRENT_PROJECT} QML_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/QEQuick3d" PUBLIC)
+# addQML(${CURRENT_PROJECT} QML_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/QEQuick3d" VERSION 1.0 MODULE_NAME QEQuick3d PUBLIC)
 
 function(addQML target)
 
