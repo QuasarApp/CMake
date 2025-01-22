@@ -300,13 +300,24 @@ function(addDeployFromCustomFile name file)
             "${file}*"
         )
 
-    ADD_CUSTOM_TARGET(
-        deploy${name}
-        SOURCES ${${name}files}
-        COMMAND cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}
-        COMMENT "Deploy: cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}"
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    )
+    if (QT_QMAKE_EXECUTABLE)
+        ADD_CUSTOM_TARGET(
+            deploy${name}
+            SOURCES ${${name}files}
+            COMMAND cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}
+            COMMENT "Deploy: cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}"
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        )
+    else()
+        ADD_CUSTOM_TARGET(
+            deploy${name}
+            SOURCES ${${name}files}
+            COMMAND cqtdeployer noQt -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}
+            COMMENT "Deploy: cqtdeployer noQt -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}"
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        )
+    endif()
+
 
     add_dependencies(deploy deploy${name})
 
