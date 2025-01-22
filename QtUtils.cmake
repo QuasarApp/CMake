@@ -11,6 +11,7 @@
 # *********************
 # The prepareQM function - This function prepare translations for you prijects
 # The updateGitVars macross - This macross update all GIT variables releative current cmake file.
+# The addQML function - This function add QML module into target and prepare qmldir file.
 #**********************
 # Availabel VARIABLE:
 # *********************
@@ -25,6 +26,97 @@ if(DEFINED PROJECT_QT_UTILS_SUPPORT)
 else()
   set(PROJECT_QT_UTILS_SUPPORT 1)
 endif()
+
+# This function add QML module into target and prepare qmldir file and qrc files.
+# this function designed to prepare a static or shared library with qml components,
+# that can be imported into other projects only after linked parent library.
+# Arguments :
+# nicecery arguments:
+#  target - it is name of the target for that will be added QML module.
+#  QML_DIR - it is directory with QML files.
+
+# optional arguments:
+#  VERSION - it is version of the QML module. Default value is 1.0.
+#  MODULE_NAME - it is name of the QML module. Default value is TARGET_NAME.
+#   For example if the target name is QEQuick3d then the module name will be QEQuick3dQML.
+# Example:
+# addQML(QEQuick3d QML_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+# addQML(QEQuick3d QML_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src VERSION 1.0 MODULE_NAME QEQuick3d)
+
+function(addQML target)
+
+    set(options VERSION MODULE_NAME PUBLIC)
+    set(oneValueArgs QML_DIR)
+
+    cmake_parse_arguments(arg_addQML
+        "${options}" "${oneValueArgs}" ""
+        ${ARGN}
+    )
+
+
+    # QML module configuration.
+    file(GLOB QML_FILES
+        RELATIVE "${arg_addQML_QML_DIR}"
+        "${arg_addQML_QML_DIR}/*.qml")
+
+    if(NOT EXISTS "${arg_addQML_QML_DIR}")
+        message(FATAL_ERROR "QML_DIR is not a readable directory")
+    endif()
+
+    file(GLOB_RECURSE ALL_QML_FILES
+        RELATIVE "${arg_addQML_QML_DIR}"
+        "${arg_addQML_QML_DIR}/*.qml")
+
+
+    if (NOT arg_addQML_VERSION)
+        set(arg_addQML_VERSION "1.0")
+    endif()
+
+    if (NOT arg_addQML_MODULE_NAME)
+        set(arg_addQML_MODULE_NAME "${target}")
+    endif()
+
+
+    if(${arg_addQML_PUBLIC})
+
+        set(QML_MODULE_CONTENT "")
+
+        foreach(QML_FILE ${QML_FILES})
+            get_filename_component(QML_NAME ${QML_FILE} NAME_WE)
+            set(QML_MODULE_CONTENT "${QML_MODULE_CONTENT}${QML_NAME} ${arg_addQML_VERSION} ${QML_NAME}.qml\n")
+        endforeach()
+
+        write_file("${arg_addQML_QML_DIR}/qmldir" "module ${arg_addQML_MODULE_NAME}\n" )
+        write_file("${arg_addQML_QML_DIR}/qmldir" "${QML_MODULE_CONTENT}" APPEND)
+        file(RELATIVE_PATH QMLDIR_RELEATIVE_PATH ${arg_addQML_QML_DIR} "${arg_addQML_QML_DIR}/qmldir")
+
+        if (NOT QML_IMPORT_PATH MATCHES "${arg_addQML_QML_DIR}/..")
+            set(QML_IMPORT_PATH ${QML_IMPORT_PATH} "${arg_addQML_QML_DIR}/.." CACHE STRING "update global variable to access to qml from qt creator." FORCE)
+        endif()
+
+    endif()
+
+    # here is creating a qrc file and adding them into target
+    set(QML_QRC_FILE "${arg_addQML_QML_DIR}/${arg_addQML_MODULE_NAME}.qrc")
+    write_file(${QML_QRC_FILE} "<RCC>\n")
+    write_file(${QML_QRC_FILE} "    <qresource prefix=\"/${arg_addQML_MODULE_NAME}\">\n" APPEND)
+
+    if(${arg_addQML_PUBLIC})
+        write_file(${QML_QRC_FILE} "        <file>${QMLDIR_RELEATIVE_PATH}</file>\n" APPEND)
+    endif()
+
+    foreach(QML_FILE ${ALL_QML_FILES})
+        write_file(${QML_QRC_FILE} "        <file>${QML_FILE}</file>\n" APPEND)
+    endforeach()
+    write_file(${QML_QRC_FILE} "    </qresource>\n" APPEND)
+    write_file(${QML_QRC_FILE} "</RCC>\n" APPEND)
+
+    # add to taget new qrc file as source
+    target_sources(${target} PRIVATE ${QML_QRC_FILE})
+
+
+
+endfunction()
 
 # This function prepare translations for you prijects
 # Arguments :
