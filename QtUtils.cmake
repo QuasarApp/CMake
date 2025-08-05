@@ -51,8 +51,8 @@ endif()
 
 function(addQML target)
 
-    set(options VERSION MODULE_NAME PUBLIC)
-    set(oneValueArgs QML_DIR)
+    set(options PUBLIC)
+    set(oneValueArgs VERSION MODULE_NAME QML_DIR)
 
     cmake_parse_arguments(arg_addQML
         "${options}" "${oneValueArgs}" ""
