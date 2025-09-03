@@ -300,20 +300,27 @@ function(addDeployFromCustomFile name file)
             "${file}*"
         )
 
+    find_program(CQT_DEPLOYER_EXE "cqtdeployer")
+
+    if(NOT EXISTS ${CQT_DEPLOYER_EXE})
+        message("please install the cqtdeployer before deploy this project! ")
+        return()
+    endif(NOT EXISTS ${CQT_DEPLOYER_EXE})
+
     if (QT_QMAKE_EXECUTABLE)
         ADD_CUSTOM_TARGET(
             deploy${name}
             SOURCES ${${name}files}
-            COMMAND cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}
-            COMMENT "Deploy: cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}"
+            COMMAND ${CQT_DEPLOYER_EXE} -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}
+            COMMENT "Deploy: ${CQT_DEPLOYER_EXE} -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}"
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         )
     else()
         ADD_CUSTOM_TARGET(
             deploy${name}
             SOURCES ${${name}files}
-            COMMAND cqtdeployer noQt -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}
-            COMMENT "Deploy: cqtdeployer noQt -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}"
+            COMMAND ${CQT_DEPLOYER_EXE} noQt -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}
+            COMMENT "Deploy: ${CQT_DEPLOYER_EXE} noQt -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}"
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         )
     endif()
