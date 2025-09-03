@@ -300,12 +300,19 @@ function(addDeployFromCustomFile name file)
             "${file}*"
         )
 
-    find_program(CQT_DEPLOYER_EXE "cqtdeployer")
+    if (NOT DEFINED ENV{CQTDEPLOYER})
+        find_program(CQT_DEPLOYER_EXE "cqtdeployer")
+    else()
+        set(CQT_DEPLOYER_EXE $ENV{CQTDEPLOYER})
+    endif()
+
+    message("cqtdeployer executable: ${CQT_DEPLOYER_EXE}")
 
     if(NOT EXISTS ${CQT_DEPLOYER_EXE})
         message("please install the cqtdeployer before deploy this project! ")
         return()
     endif(NOT EXISTS ${CQT_DEPLOYER_EXE})
+
 
     if (QT_QMAKE_EXECUTABLE)
         ADD_CUSTOM_TARGET(
