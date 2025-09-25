@@ -131,8 +131,7 @@ function(separate_debug_symbols TARGET_NAME)
                 TARGET ${TARGET_NAME} POST_BUILD
                 COMMAND objcopy --only-keep-debug "$<TARGET_FILE:${TARGET_NAME}>" "$<TARGET_FILE:${TARGET_NAME}>.debug"
                 COMMAND objcopy --strip-debug --strip-unneeded "$<TARGET_FILE:${TARGET_NAME}>"
-                COMMAND objcopy --add-gnu-debuglink "$<TARGET_FILE:${TARGET_NAME}>.debug" "$<TARGET_FILE:${TARGET_NAME}>"
-
+                COMMAND objcopy --add-gnu-debuglink="$<TARGET_FILE:${TARGET_NAME}>.debug" "$<TARGET_FILE:${TARGET_NAME}>"
 
                 COMMENT "Stripping debug symbols for ${TARGET_NAME}"
             )
