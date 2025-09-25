@@ -101,9 +101,9 @@
 
 
 if(DEFINED QUASARAPP_DEFAULT_TARGETS)
-  return()
+    return()
 else()
-  set(QUASARAPP_DEFAULT_TARGETS 1)
+    set(QUASARAPP_DEFAULT_TARGETS 1)
 endif()
 
 set(DOC_TARGETS_LIST "")
@@ -122,6 +122,24 @@ if (IOS)
     include(${CMAKE_CURRENT_LIST_DIR}/QtIosCMake/AddQtIosApp.cmake)
 
 endif()
+
+function(separate_debug_symbols TARGET_NAME)
+    if (CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
+        if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+
+            add_custom_command(
+                TARGET ${TARGET_NAME} POST_BUILD
+                COMMAND objcopy --only-keep-debug "$<TARGET_FILE:${TARGET_NAME}>" "$<TARGET_FILE:${TARGET_NAME}>.debug"
+                COMMAND objcopy --strip-debug --strip-unneeded "$<TARGET_FILE:${TARGET_NAME}>"
+                COMMAND objcopy --add-gnu-debuglink "$<TARGET_FILE:${TARGET_NAME}>.debug" "$<TARGET_FILE:${TARGET_NAME}>"
+
+
+                COMMENT "Stripping debug symbols for ${TARGET_NAME}"
+            )
+        endif()
+    endif()
+
+endfunction()
 
 function(emptyTarget targetName)
 
@@ -153,7 +171,7 @@ function(initTests)
         DEPENDS
     )
 
-    message("prepare tests for ${TEST_TARGETS_LIST}")
+message("prepare tests for ${TEST_TARGETS_LIST}")
 
 endfunction()
 
@@ -178,17 +196,17 @@ function(addTestsArg name testExec arg)
         COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\" -recursiveDepth 5
         COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        )
-
-    ADD_CUSTOM_TARGET(
-        test${name}
-        COMMAND ${RUN_CMD} ${arg}
-        COMMENT "=================== Run Test ==================="
-        WORKING_DIRECTORY ${DIR_FOR_TESTING}/${name}
-        DEPENDS deployTest${name}
     )
 
-    add_dependencies(test test${name})
+ADD_CUSTOM_TARGET(
+    test${name}
+    COMMAND ${RUN_CMD} ${arg}
+    COMMENT "=================== Run Test ==================="
+    WORKING_DIRECTORY ${DIR_FOR_TESTING}/${name}
+    DEPENDS deployTest${name}
+)
+
+add_dependencies(test test${name})
 
 endfunction()
 
@@ -216,18 +234,18 @@ function(addTests name testExec)
     )
 
 
-    ADD_CUSTOM_TARGET(
-        test${name}
-        COMMAND ${RUN_CMD}
-        COMMENT "=================== Run Test ==================="
-        WORKING_DIRECTORY ${DIR_FOR_TESTING}/${name}
-        DEPENDS deployTest${name}
-    )
+ADD_CUSTOM_TARGET(
+    test${name}
+    COMMAND ${RUN_CMD}
+    COMMENT "=================== Run Test ==================="
+    WORKING_DIRECTORY ${DIR_FOR_TESTING}/${name}
+    DEPENDS deployTest${name}
+)
 
-    add_dependencies(test test${name})
+add_dependencies(test test${name})
 
 
-    message("prepare tests for ${RUN_CMD}")
+message("prepare tests for ${RUN_CMD}")
 
 endfunction()
 
@@ -265,7 +283,7 @@ function(addDeploy name targets targetDir)
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 
-    add_dependencies(deploy deploy${name})
+add_dependencies(deploy deploy${name})
 
 endfunction()
 
@@ -283,7 +301,7 @@ function(addDeployFromFile name)
         COMMENT "Deploy: cqtdeployer -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\""
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
-    add_dependencies(deploy deploy${name})
+add_dependencies(deploy deploy${name})
 
 
 endfunction()
@@ -297,43 +315,43 @@ function(addDeployFromCustomFile name file)
     endif(TARGET deploy${name})
 
     file(GLOB ${name}files
-            "${file}*"
-        )
+        "${file}*"
+    )
 
-    if (NOT DEFINED ENV{CQTDEPLOYER})
-        find_program(CQT_DEPLOYER_EXE "cqtdeployer")
-    else()
-        set(CQT_DEPLOYER_EXE $ENV{CQTDEPLOYER})
-    endif()
+if (NOT DEFINED ENV{CQTDEPLOYER})
+    find_program(CQT_DEPLOYER_EXE "cqtdeployer")
+else()
+    set(CQT_DEPLOYER_EXE $ENV{CQTDEPLOYER})
+endif()
 
-    message("cqtdeployer executable: ${CQT_DEPLOYER_EXE}")
+message("cqtdeployer executable: ${CQT_DEPLOYER_EXE}")
 
-    if(NOT EXISTS ${CQT_DEPLOYER_EXE})
-        message("please install the cqtdeployer before deploy this project! ")
-        return()
-    endif(NOT EXISTS ${CQT_DEPLOYER_EXE})
-
-
-    if (QT_QMAKE_EXECUTABLE)
-        ADD_CUSTOM_TARGET(
-            deploy${name}
-            SOURCES ${${name}files}
-            COMMAND ${CQT_DEPLOYER_EXE} -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}
-            COMMENT "Deploy: ${CQT_DEPLOYER_EXE} -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}"
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        )
-    else()
-        ADD_CUSTOM_TARGET(
-            deploy${name}
-            SOURCES ${${name}files}
-            COMMAND ${CQT_DEPLOYER_EXE} noQt -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}
-            COMMENT "Deploy: ${CQT_DEPLOYER_EXE} noQt -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}"
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        )
-    endif()
+if(NOT EXISTS ${CQT_DEPLOYER_EXE})
+    message("please install the cqtdeployer before deploy this project! ")
+    return()
+endif(NOT EXISTS ${CQT_DEPLOYER_EXE})
 
 
-    add_dependencies(deploy deploy${name})
+if (QT_QMAKE_EXECUTABLE)
+    ADD_CUSTOM_TARGET(
+        deploy${name}
+        SOURCES ${${name}files}
+        COMMAND ${CQT_DEPLOYER_EXE} -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}
+        COMMENT "Deploy: ${CQT_DEPLOYER_EXE} -qmake ${QT_QMAKE_EXECUTABLE} -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    )
+else()
+    ADD_CUSTOM_TARGET(
+        deploy${name}
+        SOURCES ${${name}files}
+        COMMAND ${CQT_DEPLOYER_EXE} noQt -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}
+        COMMENT "Deploy: ${CQT_DEPLOYER_EXE} noQt -binPrefix \"${CMAKE_BINARY_DIR}\" -confFile ${file}"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    )
+endif()
+
+
+add_dependencies(deploy deploy${name})
 
 endfunction()
 
@@ -361,41 +379,41 @@ function(addDeploySnap name targetDir)
             DEPENDS deploy${name}
         )
 
-        ADD_CUSTOM_TARGET(
-            snapcraft${name}
-            COMMAND snapcraft ${SNAPCRAFT_EXTRA_ARG}
-            COMMENT "create snap: snapcraft ${SNAPCRAFT_EXTRA_ARG}"
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-            DEPENDS chmodsnap${name}
-        )
-    else()
-        ADD_CUSTOM_TARGET(
-            snapcraft${name}
-            COMMAND snapcraft ${SNAPCRAFT_EXTRA_ARG}
-            COMMENT "create snap: snapcraft ${SNAPCRAFT_EXTRA_ARG}"
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-            DEPENDS deploy${name}
-        )
-    endif()
-
-
     ADD_CUSTOM_TARGET(
-        snapcraftCopy${name}
-        COMMAND ${CMAKE_COMMAND} -E copy *.snap ${targetDir}
-        COMMENT "copy snap: ${CMAKE_COMMAND} -E copy *.snap ${targetDir}"
+        snapcraft${name}
+        COMMAND snapcraft ${SNAPCRAFT_EXTRA_ARG}
+        COMMENT "create snap: snapcraft ${SNAPCRAFT_EXTRA_ARG}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        DEPENDS snapcraft${name}
-
+        DEPENDS chmodsnap${name}
     )
-
+else()
     ADD_CUSTOM_TARGET(
-        snap${name}
-        COMMENT "deploy snap${name}"
-        DEPENDS snapcraftCopy${name}
-
+        snapcraft${name}
+        COMMAND snapcraft ${SNAPCRAFT_EXTRA_ARG}
+        COMMENT "create snap: snapcraft ${SNAPCRAFT_EXTRA_ARG}"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        DEPENDS deploy${name}
     )
+endif()
 
-    add_dependencies(deploy snap${name})
+
+ADD_CUSTOM_TARGET(
+    snapcraftCopy${name}
+    COMMAND ${CMAKE_COMMAND} -E copy *.snap ${targetDir}
+    COMMENT "copy snap: ${CMAKE_COMMAND} -E copy *.snap ${targetDir}"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    DEPENDS snapcraft${name}
+
+)
+
+ADD_CUSTOM_TARGET(
+    snap${name}
+    COMMENT "deploy snap${name}"
+    DEPENDS snapcraftCopy${name}
+
+)
+
+add_dependencies(deploy snap${name})
 
 
 endfunction()
@@ -423,31 +441,31 @@ function(addDeploySnapOld name targetDir)
 
     )
 
-    ADD_CUSTOM_TARGET(
-        snapcraft${name}
-        COMMAND snapcraft ${SNAPCRAFT_MODE}
-        COMMENT "create snap: snapcraft ${SNAPCRAFT_MODE}"
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        DEPENDS deploy${name} snapClear${name}
-    )
+ADD_CUSTOM_TARGET(
+    snapcraft${name}
+    COMMAND snapcraft ${SNAPCRAFT_MODE}
+    COMMENT "create snap: snapcraft ${SNAPCRAFT_MODE}"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    DEPENDS deploy${name} snapClear${name}
+)
 
-    ADD_CUSTOM_TARGET(
-        snapcraftCopy${name}
-        COMMAND ${CMAKE_COMMAND} -E copy *.snap ${targetDir}
-        COMMENT "copy snap: ${CMAKE_COMMAND} -E copy *.snap ${targetDir}"
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        DEPENDS snapcraft${name}
+ADD_CUSTOM_TARGET(
+    snapcraftCopy${name}
+    COMMAND ${CMAKE_COMMAND} -E copy *.snap ${targetDir}
+    COMMENT "copy snap: ${CMAKE_COMMAND} -E copy *.snap ${targetDir}"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    DEPENDS snapcraft${name}
 
-    )
+)
 
-    ADD_CUSTOM_TARGET(
-        snap${name}
-        COMMENT "deploy snap${name}"
-        DEPENDS snapcraftCopy${name}
+ADD_CUSTOM_TARGET(
+    snap${name}
+    COMMENT "deploy snap${name}"
+    DEPENDS snapcraftCopy${name}
 
-    )
+)
 
-    add_dependencies(deploy snap${name})
+add_dependencies(deploy snap${name})
 
 
 endfunction()
@@ -472,73 +490,73 @@ function(addDeployIPA name bundle_id targetDir version appleDir)
     message("Use Apple dir: ${appleDir}")
 
     add_qt_ios_app(${name}
-      NAME ${name}
-      BUNDLE_IDENTIFIER ${bundle_id}
-      LONG_VERSION ${version}
-      SHORT_VERSION ${version}
-      VERSION ${version}
-      CUSTOM_PLIST ${QUASAR_CUSTOM_PLIST}
-      COPYRIGHT "QuasarApp 2022-2023"
-      ASSET_DIR "${appleDir}/Assets.xcassets"
-      TEAM_ID ${CMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM}
-      QT_IOS_LAUNCHSCREEN_STORYBOARD
-      LAUNCHSCREEN_STORYBOARD "${appleDir}/LaunchScreen.storyboard"
-      CATALOG_APPICON "AppIcon"
-      ORIENTATION_PORTRAIT
-      ORIENTATION_PORTRAIT_UPDOWN
-      ORIENTATION_LANDSCAPE_LEFT
-      ORIENTATION_LANDSCAPE_RIGHT
-      IPA
-      UPLOAD_SYMBOL
-      VERBOSE
+        NAME ${name}
+        BUNDLE_IDENTIFIER ${bundle_id}
+        LONG_VERSION ${version}
+        SHORT_VERSION ${version}
+        VERSION ${version}
+        CUSTOM_PLIST ${QUASAR_CUSTOM_PLIST}
+        COPYRIGHT "QuasarApp 2022-2023"
+        ASSET_DIR "${appleDir}/Assets.xcassets"
+        TEAM_ID ${CMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM}
+        QT_IOS_LAUNCHSCREEN_STORYBOARD
+        LAUNCHSCREEN_STORYBOARD "${appleDir}/LaunchScreen.storyboard"
+        CATALOG_APPICON "AppIcon"
+        ORIENTATION_PORTRAIT
+        ORIENTATION_PORTRAIT_UPDOWN
+        ORIENTATION_LANDSCAPE_LEFT
+        ORIENTATION_LANDSCAPE_RIGHT
+        IPA
+        UPLOAD_SYMBOL
+        VERBOSE
     )
 
 
-    if (${QT_VERSION_MAJOR} EQUAL 5)
+if (${QT_VERSION_MAJOR} EQUAL 5)
 
-        if("${qmlRoot}" STREQUAL "")
-            set(qmlRoot ${CMAKE_SOURCE_DIR})
-        endif()
-
-        qt_generate_plugin_import(${name} VERBOSE)
-
-        # EXTRA_PLUGIN are the one required by plugin loaded by qt_generate_plugin_import
-        # It's not automatic yet :( All this workflow might change in future version of qt
-        # with better and better cmake support
-        qt_generate_qml_plugin_import(${name}
-          QML_SRC ${qmlRoot}
-          EXTRA_PLUGIN
-            QtQuickVirtualKeyboardPlugin
-            QtQuickVirtualKeyboardSettingsPlugin
-            QtQuickVirtualKeyboardStylesPlugin
-            QmlFolderListModelPlugin
-            QQuickLayoutsPlugin
-          VERBOSE
-        )
-
-        qt5_import_plugins(${name} INCLUDE Qt5::QSvgPlugin)
-
+    if("${qmlRoot}" STREQUAL "")
+        set(qmlRoot ${CMAKE_SOURCE_DIR})
     endif()
 
+    qt_generate_plugin_import(${name} VERBOSE)
 
-    ADD_CUSTOM_TARGET(
-        deployIPA${name}
-        COMMAND ${CMAKE_COMMAND} -E copy *.ipa ${targetDir}
-        COMMENT "copy ipa: ${CMAKE_COMMAND} -E copy *.ipa ${targetDir}"
-        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${name}Ipa"
-
+    # EXTRA_PLUGIN are the one required by plugin loaded by qt_generate_plugin_import
+    # It's not automatic yet :( All this workflow might change in future version of qt
+    # with better and better cmake support
+    qt_generate_qml_plugin_import(${name}
+        QML_SRC ${qmlRoot}
+        EXTRA_PLUGIN
+        QtQuickVirtualKeyboardPlugin
+        QtQuickVirtualKeyboardSettingsPlugin
+        QtQuickVirtualKeyboardStylesPlugin
+        QmlFolderListModelPlugin
+        QQuickLayoutsPlugin
+        VERBOSE
     )
 
-    ADD_CUSTOM_TARGET(
-        deployIPAd${name}
-        COMMAND ${CMAKE_COMMAND} -E copy *.plist ${targetDir}
-        COMMENT "copy plist: ${CMAKE_COMMAND} -E copy *.plist ${targetDir}"
-        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${name}Ipa"
+qt5_import_plugins(${name} INCLUDE Qt5::QSvgPlugin)
 
-    )
+endif()
 
-    add_dependencies(deploy deployIPA${name})
-    add_dependencies(deploy deployIPAd${name})
+
+ADD_CUSTOM_TARGET(
+    deployIPA${name}
+    COMMAND ${CMAKE_COMMAND} -E copy *.ipa ${targetDir}
+    COMMENT "copy ipa: ${CMAKE_COMMAND} -E copy *.ipa ${targetDir}"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${name}Ipa"
+
+)
+
+ADD_CUSTOM_TARGET(
+    deployIPAd${name}
+    COMMAND ${CMAKE_COMMAND} -E copy *.plist ${targetDir}
+    COMMENT "copy plist: ${CMAKE_COMMAND} -E copy *.plist ${targetDir}"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${name}Ipa"
+
+)
+
+add_dependencies(deploy deployIPA${name})
+add_dependencies(deploy deployIPAd${name})
 
 endfunction()
 
@@ -551,43 +569,43 @@ function(addDeployAPK name android_src targetDir extraLibs)
     endif(TARGET deployAPK${name})
 
     IF(NOT DEFINED ENV{ANDROID_SDK_ROOT})
-        message("the ANDROID_SDK_ROOT is not defined. define ANDROID_SDK_ROOT variable and run cmake again!")
-        return()
-    endif()
+    message("the ANDROID_SDK_ROOT is not defined. define ANDROID_SDK_ROOT variable and run cmake again!")
+    return()
+endif()
 
-    IF(DEFINED ENV{ANDROID_API_VERSION})
-        set(ANDROID_PLATFORM_LEVEL $ENV{ANDROID_API_VERSION})
-    else()
-        set(ANDROID_PLATFORM_LEVEL 30)
-    endif()
-    message("The ANDROID_PLATFORM_LEVEL = ${ANDROID_PLATFORM_LEVEL}")
+IF(DEFINED ENV{ANDROID_API_VERSION})
+set(ANDROID_PLATFORM_LEVEL $ENV{ANDROID_API_VERSION})
+else()
+    set(ANDROID_PLATFORM_LEVEL 30)
+endif()
+message("The ANDROID_PLATFORM_LEVEL = ${ANDROID_PLATFORM_LEVEL}")
 
 
-    add_qt_android_apk(createAPK${name} ${name}
-        PACKAGE_SOURCES ${android_src}
-        DEPENDS ${extraLibs}
-        )
+add_qt_android_apk(createAPK${name} ${name}
+    PACKAGE_SOURCES ${android_src}
+    DEPENDS ${extraLibs}
+)
 
-    ADD_CUSTOM_TARGET(
-        deployAPK${name}
-        COMMAND ${CMAKE_COMMAND} -E copy *.apk ${targetDir}
-        COMMENT "copy apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
-        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/apk/debug
-        DEPENDS createAPK${name}
+ADD_CUSTOM_TARGET(
+    deployAPK${name}
+    COMMAND ${CMAKE_COMMAND} -E copy *.apk ${targetDir}
+    COMMENT "copy apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
+    WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/apk/debug
+    DEPENDS createAPK${name}
 
-    )
+)
 
-    ADD_CUSTOM_TARGET(
-        deployAAB${name}
-        COMMAND ${CMAKE_COMMAND} -E copy *.aab ${targetDir}
-        COMMENT "copy aab: ${CMAKE_COMMAND} -E copy *.aab ${targetDir}"
-        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/bundle/release
-        DEPENDS deployAPK${name}
+ADD_CUSTOM_TARGET(
+    deployAAB${name}
+    COMMAND ${CMAKE_COMMAND} -E copy *.aab ${targetDir}
+    COMMENT "copy aab: ${CMAKE_COMMAND} -E copy *.aab ${targetDir}"
+    WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/bundle/release
+    DEPENDS deployAPK${name}
 
-    )
+)
 
-    add_dependencies(deploy deployAPK${name})
-    add_dependencies(deploy deployAAB${name})
+add_dependencies(deploy deployAPK${name})
+add_dependencies(deploy deployAAB${name})
 
 endfunction()
 
@@ -600,45 +618,45 @@ function(addDeploySignedAPK name android_src aliase keystore keystorePass target
     endif(TARGET deployAPK${name})
 
     IF(NOT DEFINED ENV{ANDROID_SDK_ROOT})
-        message("the ANDROID_SDK_ROOT is not defined. define ANDROID_SDK_ROOT variable and run cmake again!")
-        return()
-    endif()
+    message("the ANDROID_SDK_ROOT is not defined. define ANDROID_SDK_ROOT variable and run cmake again!")
+    return()
+endif()
 
-    IF(DEFINED ENV{ANDROID_API_VERSION})
-        set(ANDROID_PLATFORM_LEVEL $ENV{ANDROID_API_VERSION})
-    else()
-        set(ANDROID_PLATFORM_LEVEL 30)
-    endif()
-    message("The ANDROID_PLATFORM_LEVEL = ${ANDROID_PLATFORM_LEVEL}")
+IF(DEFINED ENV{ANDROID_API_VERSION})
+set(ANDROID_PLATFORM_LEVEL $ENV{ANDROID_API_VERSION})
+else()
+    set(ANDROID_PLATFORM_LEVEL 30)
+endif()
+message("The ANDROID_PLATFORM_LEVEL = ${ANDROID_PLATFORM_LEVEL}")
 
 
-    add_qt_android_apk(createAPK${name} ${name}
-        PACKAGE_SOURCES ${android_src}
-        KEYSTORE ${keystore} ${aliase}
-        KEYSTORE_PASSWORD ${keystorePass}
-        DEPENDS ${extraLibs}
-        )
+add_qt_android_apk(createAPK${name} ${name}
+    PACKAGE_SOURCES ${android_src}
+    KEYSTORE ${keystore} ${aliase}
+    KEYSTORE_PASSWORD ${keystorePass}
+    DEPENDS ${extraLibs}
+)
 
-    ADD_CUSTOM_TARGET(
-        deployAPK${name}
-        COMMAND ${CMAKE_COMMAND} -E copy *.apk ${targetDir}
-        COMMENT "copy apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
-        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/apk/release
-        DEPENDS createAPK${name}
+ADD_CUSTOM_TARGET(
+    deployAPK${name}
+    COMMAND ${CMAKE_COMMAND} -E copy *.apk ${targetDir}
+    COMMENT "copy apk: ${CMAKE_COMMAND} -E copy *.apk ${targetDir}"
+    WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/apk/release
+    DEPENDS createAPK${name}
 
-    )
+)
 
-    ADD_CUSTOM_TARGET(
-        deployAAB${name}
-        COMMAND ${CMAKE_COMMAND} -E copy *.aab ${targetDir}
-        COMMENT "copy aab: ${CMAKE_COMMAND} -E copy *.aab ${targetDir}"
-        WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/bundle/release
-        DEPENDS deployAPK${name}
+ADD_CUSTOM_TARGET(
+    deployAAB${name}
+    COMMAND ${CMAKE_COMMAND} -E copy *.aab ${targetDir}
+    COMMENT "copy aab: ${CMAKE_COMMAND} -E copy *.aab ${targetDir}"
+    WORKING_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/build/outputs/bundle/release
+    DEPENDS deployAPK${name}
 
-    )
+)
 
-    add_dependencies(deploy deployAPK${name})
-    add_dependencies(deploy deployAAB${name})
+add_dependencies(deploy deployAPK${name})
+add_dependencies(deploy deployAAB${name})
 
 endfunction()
 
@@ -667,19 +685,19 @@ function(addReleaseCustom name pyFile)
     endif(TARGET pyRelease${name})
 
     file(GLOB ${name}files
-            "${pyFile}*"
-        )
-
-    ADD_CUSTOM_TARGET(
-        pyRelease${name}
-        SOURCES ${${name}files}
-        COMMAND python pyFile
-        COMMENT "pyRelease${name} release: run python ${pyFile}"
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-
+        "${pyFile}*"
     )
 
-    add_dependencies(release pyRelease${name})
+ADD_CUSTOM_TARGET(
+    pyRelease${name}
+    SOURCES ${${name}files}
+    COMMAND python pyFile
+    COMMENT "pyRelease${name} release: run python ${pyFile}"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+
+)
+
+add_dependencies(release pyRelease${name})
 
 endfunction()
 
@@ -704,7 +722,7 @@ function(addReleaseSnap name branch)
 
     )
 
-    add_dependencies(release snapRelease${name})
+add_dependencies(release snapRelease${name})
 
 endfunction()
 
@@ -724,7 +742,7 @@ function(addReleaseIpa name userName keychain_key)
 
     )
 
-    add_dependencies(release ipaRelease${name})
+add_dependencies(release ipaRelease${name})
 
 endfunction()
 
@@ -738,35 +756,35 @@ function(addReleaseQif name sourceDir targetDir)
     find_program(BINARYCREATOR_EXE binarycreator)
 
     IF(NOT EXISTS ${BINARYCREATOR_EXE})
-        message("the Binarycreator not exits please install or adde path to QtInstaller Framework to PATH and run cmake again!")
-        return()
-    endif(NOT EXISTS ${BINARYCREATOR_EXE})
+    message("the Binarycreator not exits please install or adde path to QtInstaller Framework to PATH and run cmake again!")
+    return()
+endif(NOT EXISTS ${BINARYCREATOR_EXE})
 
-    set(OUT_EXE ${targetDir}/${PROJECT_NAME}OfllineInstaller.run)
-    if (WIN32)
-        set(OUT_EXE ${targetDir}/${PROJECT_NAME}OfllineInstaller.exe)
-    endif (WIN32)
+set(OUT_EXE ${targetDir}/${PROJECT_NAME}OfllineInstaller.run)
+if (WIN32)
+    set(OUT_EXE ${targetDir}/${PROJECT_NAME}OfllineInstaller.exe)
+endif (WIN32)
 
-    ADD_CUSTOM_TARGET(
-        qifDeployOnline${name}
-        COMMAND ${BINARYCREATOR_EXE} --online-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}
-        COMMENT "deploy qif online: ${BINARYCREATOR_EXE} --online-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}"
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+ADD_CUSTOM_TARGET(
+    qifDeployOnline${name}
+    COMMAND ${BINARYCREATOR_EXE} --online-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}
+    COMMENT "deploy qif online: ${BINARYCREATOR_EXE} --online-only -c ${config} -p ${sourceDir}/packages ${OUT_EXE}"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 
-    )
+)
 
-    ADD_CUSTOM_TARGET(
-        qifRelease${name}
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${sourceDir}
-        ${CMAKE_BINARY_DIR}/Repo
-        COMMENT "qifRelease${name} release ${CMAKE_COMMAND} -E copy_directory ${sourceDir} ${CMAKE_BINARY_DIR}/Repo"
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        DEPENDS qifDeployOnline${name}
-       )
+ADD_CUSTOM_TARGET(
+    qifRelease${name}
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${sourceDir}
+    ${CMAKE_BINARY_DIR}/Repo
+    COMMENT "qifRelease${name} release ${CMAKE_COMMAND} -E copy_directory ${sourceDir} ${CMAKE_BINARY_DIR}/Repo"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    DEPENDS qifDeployOnline${name}
+)
 
-   set(RELEASE_TARGETS_LIST ${RELEASE_TARGETS_LIST} qifRelease${name} PARENT_SCOPE)
-   add_dependencies(release qifRelease${name})
+set(RELEASE_TARGETS_LIST ${RELEASE_TARGETS_LIST} qifRelease${name} PARENT_SCOPE)
+add_dependencies(release qifRelease${name})
 
 
 endfunction()
@@ -782,25 +800,25 @@ function(addDoc name doxygenFile)
     find_program(DOXYGEN_EXECUTABLE doxygen)
 
     IF(NOT EXISTS ${DOXYGEN_EXECUTABLE})
-        message("the doxygen not exits please install or add a path to doxygen to a PATH envirement variable and run cmake again!")
-        return()
-    endif(NOT EXISTS ${DOXYGEN_EXECUTABLE})
+    message("the doxygen not exits please install or add a path to doxygen to a PATH envirement variable and run cmake again!")
+    return()
+endif(NOT EXISTS ${DOXYGEN_EXECUTABLE})
 
 
-    file(GLOB ${name}files
-            "${doxygenFile}*"
-        )
+file(GLOB ${name}files
+    "${doxygenFile}*"
+)
 
-    ADD_CUSTOM_TARGET(
-        doxygen${name}
-        SOURCES ${${name}files}
-        COMMAND ${DOXYGEN_EXECUTABLE} ${doxygenFile}
-        COMMENT "${DOXYGEN_EXECUTABLE} ${doxygenFile}"
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+ADD_CUSTOM_TARGET(
+    doxygen${name}
+    SOURCES ${${name}files}
+    COMMAND ${DOXYGEN_EXECUTABLE} ${doxygenFile}
+    COMMENT "${DOXYGEN_EXECUTABLE} ${doxygenFile}"
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 
-    )
+)
 
-    add_dependencies(doc doxygen${name})
+add_dependencies(doc doxygen${name})
 
 endfunction()
 
