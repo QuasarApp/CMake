@@ -162,6 +162,11 @@ function(initTests)
 
     endif(TARGET test)
 
+    if(CMAKE_TESTING_ENABLED)
+        message("CTest testing is enabled: the reserved 'test' target name is not created. Use the 'ctest' command to run the tests.")
+        return()
+    endif()
+
     message("test sub targets: ${TEST_TARGETS_LIST}")
 
     ADD_CUSTOM_TARGET(
@@ -205,7 +210,9 @@ ADD_CUSTOM_TARGET(
     DEPENDS deployTest${name}
 )
 
-add_dependencies(test test${name})
+if(NOT CMAKE_TESTING_ENABLED)
+    add_dependencies(test test${name})
+endif()
 
 endfunction()
 
@@ -241,7 +248,9 @@ ADD_CUSTOM_TARGET(
     DEPENDS deployTest${name}
 )
 
-add_dependencies(test test${name})
+if(NOT CMAKE_TESTING_ENABLED)
+    add_dependencies(test test${name})
+endif()
 
 
 message("prepare tests for ${RUN_CMD}")
