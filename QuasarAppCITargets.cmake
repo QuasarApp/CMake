@@ -190,10 +190,23 @@ function(addTestsArg name testExec arg)
 
     endif (WIN32)
 
+    # Deploy the test executable with the build tree as the only library
+    # directory. The test executable and all of its project dependencies are
+    # built into the build tree, so it is the only directory that must be
+    # scanned. Scanning the source tree as well makes any binaries checked
+    # out or extracted into it (for example the stale release distribution
+    # that cqtdeployer-install-action extracts into ${CMAKE_SOURCE_DIR}/cqt)
+    # eligible as ExtraLib candidates. The candidate order is a salted QHash
+    # order, so different processes may copy a stale libDeploy.dll instead of
+    # the freshly built one, which crashes the deployed test with
+    # STATUS_ENTRYPOINT_NOT_FOUND (0xC0000139) on Windows (issue #861, #862).
+    # A library that is not under a -libDir root is classified as a system
+    # library and is not deployed, so stale binaries are then skipped
+    # deterministically.
     ADD_CUSTOM_TARGET(
         deployTest${name}
-        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\" -recursiveDepth 5
-        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
+        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir \"${CMAKE_BINARY_DIR}\" -recursiveDepth 5
+        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_BINARY_DIR} -recursiveDepth 5"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
 
@@ -228,8 +241,8 @@ function(addTests name testExec)
 
     ADD_CUSTOM_TARGET(
         deployTest${name}
-        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir \"${CMAKE_SOURCE_DIR},${CMAKE_BINARY_DIR}\" -recursiveDepth 5
-        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_SOURCE_DIR} -recursiveDepth 5"
+        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir \"${CMAKE_BINARY_DIR}\" -recursiveDepth 5
+        COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_BINARY_DIR} -recursiveDepth 5"
     )
 
 
