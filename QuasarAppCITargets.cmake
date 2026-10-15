@@ -186,7 +186,7 @@ function(addTestsArg name testExec arg)
 
     if (WIN32)
         set(EXEC_TEST "${CMAKE_CURRENT_BINARY_DIR}/${testExec}.exe")
-        set(RUN_CMD "${DIR_FOR_TESTING}/${name}/${testExec}.exe")
+        set(RUN_CMD "${DIR_FOR_TESTING}/${name}/${testExec}.bat")
 
     endif (WIN32)
 
@@ -235,7 +235,7 @@ function(addTests name testExec)
 
     if (WIN32)
         set(EXEC_TEST "${CMAKE_CURRENT_BINARY_DIR}/${testExec}.exe")
-        set(RUN_CMD "${DIR_FOR_TESTING}/${name}/${testExec}.exe")
+        set(RUN_CMD "${DIR_FOR_TESTING}/${name}/${testExec}.bat")
 
     endif (WIN32)
 
