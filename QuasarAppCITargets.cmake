@@ -205,7 +205,7 @@ function(addTestsArg name testExec arg)
     # deterministically.
     ADD_CUSTOM_TARGET(
         deployTest${name}
-        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir \"${CMAKE_BINARY_DIR}\,${QT_ROOT_DIR}" -recursiveDepth 5
+        COMMAND cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir \"${CMAKE_BINARY_DIR},${QT_ROOT_DIR}\" -recursiveDepth 5
         COMMENT "Deploy Test: cqtdeployer clear -bin ${EXEC_TEST} -qmake ${QT_QMAKE_EXECUTABLE} -targetDir ${DIR_FOR_TESTING}/${name} -libDir ${CMAKE_BINARY_DIR},${QT_ROOT_DIR} -recursiveDepth 5"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     )
