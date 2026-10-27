@@ -50,7 +50,7 @@ endif()
 
 ## Default Defines
 ## End DEfault defines
-option(CCACHE_ENABLED "Try to use ccache for up build spead" ON)
+option(CCACHE_ENABLED "Try to use ccache for up build speed" ON)
 
 if (CCACHE_ENABLED)
     include(${CMAKE_CURRENT_LIST_DIR}/ccache.cmake)
@@ -60,7 +60,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/QuasarAppCITargets.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/QtUtils.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/crossplatform/crossplatform.cmake)
 
-message(STATUS "buid type    " ${CMAKE_BUILD_TYPE})
+message(STATUS "build type    " ${CMAKE_BUILD_TYPE})
 message(STATUS "Project      " ${PROJECT_NAME})
 message(STATUS "c compiler   " ${CMAKE_C_COMPILER})
 message(STATUS "cxx compiler " ${CMAKE_CXX_COMPILER})
