@@ -28,11 +28,11 @@ add_link_options("SHELL:-s ALLOW_MEMORY_GROWTH=1")
 add_link_options("--bind")
 
 find_program(EM_CC emcc)
-set(CMAKE_C_COMPILER ${EM_CC} CACHE FILEPATH "CC Compiller of Wasm" FORCE)
+set(CMAKE_C_COMPILER ${EM_CC} CACHE FILEPATH "CC Compiler of Wasm" FORCE)
 
 find_program(EM_CXX em++)
-set(CMAKE_CXX_COMPILER ${EM_CXX} CACHE FILEPATH "CXX Compiller of Wasm" FORCE)
+set(CMAKE_CXX_COMPILER ${EM_CXX} CACHE FILEPATH "CXX Compiler of Wasm" FORCE)
 
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "CXX Compiller of Wasm" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "CXX Compiler of Wasm" FORCE)
 
 add_definitions( -DWASM32_BUILD )
