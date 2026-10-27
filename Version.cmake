@@ -11,7 +11,7 @@ else()
   set(PROJECT_VERSIONS_SUPPORT 1)
 endif()
 
-# This module contains function that sets version of the build libraryes.
+# This module contains function that sets version of the build libraries.
 # AVailable function
 # setVersion - sets version for target with name PROJECT_NAME
 # arguments :

@@ -40,26 +40,26 @@
 #
 # addDeploySnap(name targetDir) // Add to deploy step substeps for create a snap package.
 # - name - This is prefix of added subtarget (any word).
-# - targetDir - Destanation direcroty for snap files.
+# - targetDir - Destination directory for snap files.
 #  The addDeploySnap method are support the SNAPCRAFT_EXTRA_ARG variable. If you need to use custom snapcraft mode.
 #    Example:
 #       set(SNAPCRAFT_EXTRA_ARG "--destructive-mode")
 #       addDeploySnap("Client" ${TARGET_DIR})
 #
-# addDeploySignedAPK(name input aliase keystore keystorePass targetDir) // Add subtargets of deploy setep for create signed android apk file.
+# addDeploySignedAPK(name input alias keystore keystorePass targetDir) // Add subtargets of deploy step for create signed android apk file.
 # - name - This is prefix of added subtarget (any word).
 # - android_src - Path to folder with the android_manifest file.
-# - aliase - Aliase for key store.
+# - alias - Alias for key store.
 # - keystore - Path of key store.
 # - keystorePass - Pass of keystore file.
 # - targetDir - Target dir for output apk file.
-# - extraLibs - list f the extra libraryes (like the openssl)
+# - extraLibs - list f the extra libraries (like the openssl)
 #
-# addDeployAPK(name input aliase keystore keystorePass targetDir) // Add subtargets of deploy setep for create android apk file.
+# addDeployAPK(name input alias keystore keystorePass targetDir) // Add subtargets of deploy step for create android apk file.
 # - name - This is prefix of added subtarget (any word).
 # - android_src - Path to folder with the android_manifest file.
 # - targetDir - Target dir for output apk file.
-# - extraLibs - list f the extra libraryes (like the openssl)
+# - extraLibs - list f the extra libraries (like the openssl)
 #
 # addDeployIPA name bundle_id targetDir version appleDir
 # - name - This is prefix of added subtarget (any word).
@@ -91,7 +91,7 @@
 # - targetDir - Path to target directory.
 #
 #
-# *** Dcumentation ***
+# *** Documentation ***
 # initDoc() // Create the general doc target for all subtargets addDoc. This method need to call before invoice all addDoc methods.
 #
 # addDoc(name doxygenFile) // Create subtargets for generate documentation of cpp code.
@@ -566,7 +566,7 @@ function(addDeployAPK name android_src targetDir extraLibs)
 
 endfunction()
 
-function(addDeploySignedAPK name android_src aliase keystore keystorePass targetDir extraLibs)
+function(addDeploySignedAPK name android_src alias keystore keystorePass targetDir extraLibs)
 
     if(TARGET deployAPK${name})
         message("the deployAPK${name} target already created!")
@@ -589,7 +589,7 @@ function(addDeploySignedAPK name android_src aliase keystore keystorePass target
 
     add_qt_android_apk(createAPK${name} ${name}
         PACKAGE_SOURCES ${android_src}
-        KEYSTORE ${keystore} ${aliase}
+        KEYSTORE ${keystore} ${alias}
         KEYSTORE_PASSWORD ${keystorePass}
         DEPENDS ${extraLibs}
         )
@@ -628,7 +628,7 @@ function(initRelease)
 
     ADD_CUSTOM_TARGET(
         release
-        COMMENT "=================== Relese project ==================="
+        COMMENT "=================== Release project ==================="
     )
 
 endfunction()

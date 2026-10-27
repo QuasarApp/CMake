@@ -14,7 +14,7 @@ The module provides qt utils functions. This module contains some useful functio
  - sourceDir - This is root source directory. Update will be scan this dir for prepare translations.
  - ts_files - This is list of the supported languages.
 
-**updateGitVars** This macros update all GIT variable releative current cmakelist.txt. 
+**updateGitVars** This macros update all GIT variable relative current cmakelist.txt. 
 Use This macros before read **GIT_COMMIT_HASH** and **GIT_COMMIT_COUNT** variables.
 
 ## CMake Variables
@@ -24,4 +24,4 @@ Use This macros before read **GIT_COMMIT_HASH** and **GIT_COMMIT_COUNT** variabl
 
 ### Note 
 
-For update actualy value of git variables use the updateGitVars macros.
+For update actual value of git variables use the updateGitVars macros.
