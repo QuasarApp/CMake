@@ -40,7 +40,7 @@ This module implementation next cmake functions:
 
  **addDeploySnap** (name targetDir) - Add to deploy step substeps for create a snap package.
  - name - This is prefix of added subtarget (any word).
- - targetDir - Destanation directroy for snap files.
+ - targetDir - Destination directory for snap files.
  
    **The addDeploySnap method are support the SNAPCRAFT_MODE variable.** If you need to use custom snapcraft mode.
    
@@ -56,17 +56,17 @@ This module implementation next cmake functions:
  - sourceDir - Path to folder with qif template.
  - config - Path to config file of qif template.
 
- **addDeployAPK** (name input aliase keystore keystorePass targetDir extraLibs) - Add subtargets of deploy setep for create signed android apk file.
+ **addDeployAPK** (name input alias keystore keystorePass targetDir extraLibs) - Add subtargets of deploy setep for create signed android apk file.
  - name - This is prefix of added subtarget (any word).
  - android_src -  Path to folder with the android_manifest file.
- - aliase - Alise for key store.
+ - alias - Alise for key store.
  - keystore - Path of key store.
  - keystorePass - Pass of keystore file.
  - targetDir - Target directory for output apk file.
- - extraLibs - list f the extra libraryes (like the openssl) 
+ - extraLibs - list f the extra libraries (like the openssl) 
 
 **add_qt_android_apk** (my_app_apk my_app) - This target add targets for the build apk file.
-For get more information about this function see oficial [documentation](https://github.com/LaurentGomila/qt-android-cmake#options-of-the-add_qt_android_apk-macro
+For get more information about this function see official [documentation](https://github.com/LaurentGomila/qt-android-cmake#options-of-the-add_qt_android_apk-macro
 ) of the **qt-android-cmake** toolchain.
 
  **initDeploy** - Create a main deploy target for all addDeploy subtargets. This method need to call before invoiced of all addDeploy methods.
@@ -92,7 +92,7 @@ For get more information about this function see oficial [documentation](https:/
 
 ---
 
-## Dcumentation
+## Documentation
  
 ---
  **initDoc** - Create the general doc target for all subtargets addDoc. This method need to call before invoice all addDoc methods.

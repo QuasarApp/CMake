@@ -5,19 +5,19 @@
 # of this license document, but changing it is not allowed.
 #
 
-# This module provides The qt utilty functions of QuasarApp group.
+# This module provides The qt utility functions of QuasarApp group.
 #**********************
-# Availabel functions:
+# Available functions:
 # *********************
-# The prepareQM function - This function prepare translations for you prijects
-# The updateGitVars macross - This macross update all GIT variables releative current cmake file.
+# The prepareQM function - This function prepare translations for your projects
+# The updateGitVars macross - This macross update all GIT variables relative current cmake file.
 #**********************
-# Availabel VARIABLE:
+# Available VARIABLE:
 # *********************
 # The GIT_COMMIT_COUNT variable - This variable contains commits count
-# The GIT_COMMIT_HASH variable - This variable contains short version of the buildet commit hash.
+# The GIT_COMMIT_HASH variable - This variable contains short version of the built commit hash.
 # Note:
-# For update actualy value of git variables use the updateGitVars macros
+# For update actual value of git variables use the updateGitVars macros
 
 
 if(DEFINED PROJECT_QT_UTILS_SUPPORT)
@@ -26,7 +26,7 @@ else()
   set(PROJECT_QT_UTILS_SUPPORT 1)
 endif()
 
-# This function prepare translations for you prijects
+# This function prepare translations for your projects
 # Arguments :
 #  name - it is name of the translations target.
 #  sourceDir - it is root source directory. lupdate will be scan this dir for prepare translations.
