@@ -50,7 +50,7 @@ endif()
 
 ## Default Defines
 ## End DEfault defines
-option(CCACHE_ENABLED "Try to use ccache for up build spead" ON)
+option(CCACHE_ENABLED "Try to use ccache for up build speed" ON)
 
 if (CCACHE_ENABLED)
     include(${CMAKE_CURRENT_LIST_DIR}/ccache.cmake)
