@@ -1,0 +1,82 @@
+# CMake documentation site (GitHub Pages)
+#
+# A classic Markdown documentation site built with MkDocs + the Material
+# theme. The content is the README.md (the site home page, copied to
+# docs/index.md at build time by the "Deploy Documentation (GitHub Pages)"
+# workflow) and the Docs/ module pages, so the site is generated straight
+# from Markdown without Doxygen. The workflow mirrors the Docs/ tree into
+# docs/Docs, because the README references those pages with relative links.
+
+site_name: CMake
+site_description: Cmake modules for quasarapp projects
+site_url: https://quasarapp.github.io/CMake/
+
+repo_name: QuasarApp/CMake
+repo_url: https://github.com/QuasarApp/CMake
+edit_uri: https://github.com/QuasarApp/CMake/edit/main/
+
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      # Indigo brand palette built from Material's named colors only, so
+      # the site needs no custom CSS. Indigo top bar, indigo links. The
+      # palette is intentionally different from the sibling documentation
+      # sites (CQtDeployer: orange, Heart: maroon, OpenSimplex2: teal).
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to dark mode
+    - scheme: slate
+      # Same indigo top bar on the slate neutrals. The slate links are
+      # derived from the primary color by the theme, so the same indigo
+      # accent keeps both schemes consistent (Material ships prebuilt
+      # accent rules for the base color names only).
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - content.code.copy
+    - navigation.footer
+    - navigation.indexes
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.suggest
+    - toc
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+nav:
+  # index.md is copied from the root README.md by the documentation
+  # workflow before the MkDocs build, so the README stays the single
+  # source of truth and the generated copy is not committed.
+  - Home: index.md
+  # The module documentation (Docs/), referenced by the README.
+  - Modules:
+      - QuasarApp: Docs/QuasarApp.md
+      - QuasarAppCITargets: Docs/QuasarAppCITargets.md
+      - QtUtils: Docs/QtUtils.md
+      - Ccache: Docs/ccache.md
+      - Crossplatform: Docs/crossplatform.md
