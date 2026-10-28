@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021-2025 QuasarApp.
+# Copyright (C) 2021-2026 QuasarApp.
 # Distributed under the MIT software license, see the accompanying
 # Everyone is permitted to copy and distribute verbatim copies
 # of this license document, but changing it is not allowed.
@@ -44,7 +44,7 @@ function(prepareQM name sourceDir ts_files)
     foreach(_ts_file ${ts_files})
 
         execute_process(
-            COMMAND ${LUPDATE_EXECUTABLE} -no-obsolete -locations none -recursive ${sourceDir} -ts ${_ts_file})
+            COMMAND ${LUPDATE_EXECUTABLE} -no-obsolete -silent -locations none -recursive ${sourceDir} -ts ${_ts_file})
         execute_process(
             COMMAND ${LRELEASE_EXECUTABLE} ${_ts_file})
 

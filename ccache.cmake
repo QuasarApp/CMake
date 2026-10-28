@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2018-2025 QuasarApp.
+# Copyright (C) 2018-2026 QuasarApp.
 # Distributed under the MIT software license, see the accompanying
 # Everyone is permitted to copy and distribute verbatim copies
 # of this license document, but changing it is not allowed.
@@ -40,6 +40,14 @@ if(CCACHE_PROGRAM)
 
         message("CMAKE_XCODE_ATTRIBUTE_CC = ${CMAKE_XCODE_ATTRIBUTE_CC}")
         message("CMAKE_XCODE_ATTRIBUTE_CXX = ${CMAKE_XCODE_ATTRIBUTE_CXX}")
+
+    elseif(MSVC)
+      # This block handles MSVC and Visual Studio generator
+      # We set the CCACHE_PROGRAM to be the compiler launcher
+      set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+      set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+
+      message(STATUS "ccache enabled for MSVC using compiler launchers.")
 
     endif()
 endif()

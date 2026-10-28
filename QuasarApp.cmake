@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021-2025 QuasarApp.
+# Copyright (C) 2021-2026 QuasarApp.
 # Distributed under the MIT software license, see the accompanying
 # Everyone is permitted to copy and distribute verbatim copies
 # of this license document, but changing it is not allowed.
@@ -50,7 +50,12 @@ endif()
 
 ## Default Defines
 ## End DEfault defines
-include(${CMAKE_CURRENT_LIST_DIR}/ccache.cmake)
+option(CCACHE_ENABLED "Try to use ccache for up build speed" ON)
+
+if (CCACHE_ENABLED)
+    include(${CMAKE_CURRENT_LIST_DIR}/ccache.cmake)
+endif()
+
 include(${CMAKE_CURRENT_LIST_DIR}/QuasarAppCITargets.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/QtUtils.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/crossplatform/crossplatform.cmake)
@@ -59,6 +64,5 @@ message(STATUS "build type    " ${CMAKE_BUILD_TYPE})
 message(STATUS "Project      " ${PROJECT_NAME})
 message(STATUS "c compiler   " ${CMAKE_C_COMPILER})
 message(STATUS "cxx compiler " ${CMAKE_CXX_COMPILER})
-message(STATUS "build shared " ${BUILD_SHARED_LIBS})
 message(STATUS "qmake exec   " ${QT_QMAKE_EXECUTABLE})
 message(STATUS "tool chain   " ${CMAKE_TOOLCHAIN_FILE})
