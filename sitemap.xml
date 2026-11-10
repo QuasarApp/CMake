@@ -2,26 +2,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://quasarapp.github.io/CMake/</loc>
-         <lastmod>2026-10-28</lastmod>
+         <lastmod>2026-11-10</lastmod>
     </url>
     <url>
          <loc>https://quasarapp.github.io/CMake/Docs/QtUtils/</loc>
-         <lastmod>2026-10-28</lastmod>
+         <lastmod>2026-11-10</lastmod>
     </url>
     <url>
          <loc>https://quasarapp.github.io/CMake/Docs/QuasarApp/</loc>
-         <lastmod>2026-10-28</lastmod>
+         <lastmod>2026-11-10</lastmod>
     </url>
     <url>
          <loc>https://quasarapp.github.io/CMake/Docs/QuasarAppCITargets/</loc>
-         <lastmod>2026-10-28</lastmod>
+         <lastmod>2026-11-10</lastmod>
     </url>
     <url>
          <loc>https://quasarapp.github.io/CMake/Docs/ccache/</loc>
-         <lastmod>2026-10-28</lastmod>
+         <lastmod>2026-11-10</lastmod>
     </url>
     <url>
          <loc>https://quasarapp.github.io/CMake/Docs/crossplatform/</loc>
-         <lastmod>2026-10-28</lastmod>
+         <lastmod>2026-11-10</lastmod>
     </url>
 </urlset>
