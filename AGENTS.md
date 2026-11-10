@@ -41,52 +41,6 @@ so a change here reaches every project in the group.
 
 ## Developing process
 
-### Toolchain
-
-| Tool | Version / notes |
-|---|---|
-| CMake | ≥ 3.12 |
-| Qt | 6.10 — a Qt prefix on `CMAKE_PREFIX_PATH` is needed for the standalone build |
-| Ninja | preferred generator |
-| Doxygen | for the `doc` target |
-| mkdocs | documentation site (`Docs/`) |
-
-### Build
-
-Step by step.
-
-**1. One-time toolchain setup.** CMake ≥ 3.12 plus a Qt 6.10 install (e.g.
-via aqtinstall: `aqt install-qt linux desktop 6.10.3 gcc_64 -O /opt/Qt`) —
-the module layer queries Qt, so the standalone configure needs the prefix.
-
-**2. Get the sources.** No submodules.
-
-```sh
-git clone https://github.com/QuasarApp/CMake.git
-```
-
-**3. Configure.**
-
-```sh
-cmake -B build -G Ninja -DCMAKE_PREFIX_PATH=/opt/Qt/6.10.3/gcc_64 -DCMAKE_BUILD_TYPE=Release
-```
-
-**4. Build** (mainly produces the doc target).
-
-```sh
-cmake --build build --parallel 16
-```
-
-**5. Find the result.** There is no runtime binary — the deliverable of this
-repository is the CMake modules themselves, consumed by other QuasarApp
-projects via `include(<path>/QuasarApp.cmake)` or `add_subdirectory(...)`.
-After changing a module, re-verify with a consuming project (a broken module
-breaks every project that includes it — see Testing process).
-
-CMake options: none at the top level (this repository is a module set, not a
-product). The `doc` target (registered via `addDoc`) generates the Doxygen
-documentation; `Docs/` + `mkdocs.yml` publish the module reference.
-
 ### Branching, labels and pull requests (workflow for AI agents)
 
 - Work is issue-driven: one GitHub issue → one branch named
@@ -94,7 +48,10 @@ documentation; `Docs/` + `mkdocs.yml` publish the module reference.
   another task branch.
 - Commit messages: short imperative subject + issue reference, e.g.
   `fix: <summary> (issue #<issue>)`, `docs: <summary> (issue #<issue>)`.
-- Keep the build and lint green; a red CI blocks the merge.
+- This repository has no build CI: it is a CMake module set, not a buildable
+  product. The only workflow is `.github/workflows/deploy-docs.yml` (MkDocs
+  site → GitHub Pages, runs on push to `main`); a red `Deploy Documentation`
+  run blocks the merge.
 
 **The exact commands.**
 
@@ -119,7 +76,8 @@ gh pr create --base main --head task_<issue> \
   --title "<type>: <short imperative summary> (issue #<issue>)" \
   --body-file /tmp/pr_body.md
 
-# 5. the issue goes to waiting-for-review; watch CI from the CLI
+# 5. the issue goes to waiting-for-review; check the docs-deploy run
+#    (the only CI in this repository) from the CLI
 gh issue edit <issue> --remove-label in-progress --add-label waiting-for-review
 gh pr checks <number>
 ```
@@ -169,32 +127,3 @@ gh pr create \
 - `Docs/*.md` must stay in sync with the module they describe; a module
   change and its `Docs/` page ship in the same PR.
 - New modules ship **with** their `Docs/` page — never in a follow-up ticket.
-
-## Testing process
-
-### Test infrastructure
-
-This repository has no unit-test suite: it is CMake logic, and its real tests
-are the consuming projects. The standalone build registers an empty `test`
-aggregate target (nothing is added to it).
-
-### Running the tests from CMake
-
-There is nothing to run here. Verification of a change = configure + build a
-consuming project against the modified layer:
-
-```sh
-# in a sibling clone (e.g. easyssl), point the CMake submodule at your branch, then:
-cmake -B build -G Ninja -DCMAKE_PREFIX_PATH=/opt/Qt/6.10.3/gcc_64 \
-  -DCMAKE_BUILD_TYPE=Debug
-cmake --build build --parallel 16
-```
-
-### Smoke tests — the most important testing step
-
-The smoke test for this repository is: a consuming project (any QuasarApp
-C++/Qt project that includes the layer) configures and builds green with the
-changed modules, and its test suite still runs. `easyssl` is the cheapest
-consumer — configure it with `EASYSSL_TESTS=ON` (Debug), build and execute
-`easyssl_tests`. A red configure/build in any consumer is a smoke-test
-failure for this repository.
