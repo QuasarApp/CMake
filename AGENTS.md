@@ -13,16 +13,18 @@ so a change here reaches every project in the group.
 
 - **Language:** CMake (plus generated-file helpers in shell/qmake)
 - **Build system:** CMake ≥ 3.12
-- **License:** GPLv3
+- **License:** MIT — per the `LICENSE` file (a few source headers still
+  reference GPLv3; the `LICENSE` file is authoritative)
 
 ### Repository layout
 
 | Path | Contents |
 |---|---|
-| `QuasarApp.cmake` | Main module: `initAll()`, `updateGitVars()` / `updateGitVarsWithHash()` (git commit count/hash → project version) |
-| `QuasarAppCITargets.cmake` | `initTests()`/`addTests()` (the `test` aggregate + per-suite `test<Name>` / `deployTest<Name>` targets), `initDeploy()`/`addDeploy*()` (CQtDeployer), `initRelease()`, `initDoc()`/`addDoc()` |
-| `QtUtils.cmake` | Qt utilities: translations (lupdate/lrelease targets), QML templates |
-| `Version.cmake` | Version helpers |
+| `CMakeLists.txt` | the repo's own entry: `include(QuasarApp.cmake)` + `include(Version.cmake)` + `initAll()` + `addDoc()` (builds the docs) |
+| `QuasarApp.cmake` | umbrella module: default build type + ccache switch; includes `QuasarAppCITargets.cmake`, `QtUtils.cmake`, `crossplatform/`, prints the build summary |
+| `QuasarAppCITargets.cmake` | `initAll()` (calls `initTests()`/`initDeploy()`/`initRelease()`/`initDoc()`), `addTests()` (the `test` aggregate + per-suite `test<Name>` / `deployTest<Name>` targets), `addDeploy*()` (CQtDeployer), `addRelease*()`, `addDoc()` |
+| `QtUtils.cmake` | Qt utilities: `prepareQM()` translations (lupdate/lrelease target), `updateGitVars()` / `updateGitVarsWithHash()` (git commit count/hash → project version), `configure_file_in()` (`.in` file templates) |
+| `Version.cmake` | Version helpers (`setVersion*()`; marked deprecated in-file) |
 | `ccache.cmake` | optional ccache support |
 | `crossplatform/` | cross-platform toolchains (Android, iOS, wasm32, …) |
 | `qt-android-cmake/`, `QtIosCMake/`, `QtStaticCMake/` | platform-specific CMake glue |
@@ -36,8 +38,9 @@ so a change here reaches every project in the group.
 - A `test<name>` target deploys the suite binary with `cqtdeployer` into
   `Testing/<name>/` and executes it there; the `test` aggregate depends on
   every registered suite.
-- Versioning: `updateGitVars*()` read `GIT_COMMIT_COUNT_FROM` /
-  `GIT_COMMIT_HASH` from git; projects build their version string from them.
+- Versioning: `updateGitVars*()` (in `QtUtils.cmake`) set `GIT_COMMIT_COUNT`,
+  `GIT_COMMIT_COUNT_FROM` and `GIT_COMMIT_HASH` from git; projects build their
+  version string from them.
 
 ## Developing process
 
@@ -50,8 +53,9 @@ so a change here reaches every project in the group.
   `fix: <summary> (issue #<issue>)`, `docs: <summary> (issue #<issue>)`.
 - This repository has no build CI: it is a CMake module set, not a buildable
   product. The only workflow is `.github/workflows/deploy-docs.yml` (MkDocs
-  site → GitHub Pages, runs on push to `main`); a red `Deploy Documentation`
-  run blocks the merge.
+  site → GitHub Pages, runs on push to `main`) — it runs **after** the
+  merge, so keep `Docs/` and `mkdocs.yml` in a working state. On a PR the
+  only check that runs is the GitGuardian security scan.
 
 **The exact commands.**
 
@@ -76,8 +80,9 @@ gh pr create --base main --head task_<issue> \
   --title "<type>: <short imperative summary> (issue #<issue>)" \
   --body-file /tmp/pr_body.md
 
-# 5. the issue goes to waiting-for-review; check the docs-deploy run
-#    (the only CI in this repository) from the CLI
+# 5. the issue goes to waiting-for-review; check the PR checks (GitGuardian
+#    is the only check on a PR). After the merge, watch the docs deploy:
+#    `gh run list --limit 5`
 gh issue edit <issue> --remove-label in-progress --add-label waiting-for-review
 gh pr checks <number>
 ```
